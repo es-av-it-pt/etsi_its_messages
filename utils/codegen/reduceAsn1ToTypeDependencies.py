@@ -81,8 +81,20 @@ def findTypeDependencies(type: str, docs: Dict, raw_docs: Dict[str, str], docs_t
         for m in type_info["members"]:
             if m is None:
                 continue
+            if isinstance(m, list):
+                for mm in m:
+                    if mm["type"] in ("SEQUENCE", "SEQUENCE OF"):
+                        dependency_types.append(mm["element"]["type"])
+                    elif mm["type"] == "CHOICE":
+                        dependency_types += [mmm["type"] for mmm in mm["members"] if mmm is not None]
+                    else:
+                        dependency_types.append(mm["type"])
+                    if "default" in mm:
+                        dependency_types.append(mm["default"])
+                continue
             if m["type"] in ("SEQUENCE", "SEQUENCE OF"):
-                dependency_types.append(m["element"]["type"])
+                if "element" in m:
+                    dependency_types.append(m["element"]["type"])
             elif m["type"] == "CHOICE":
                 dependency_types += [mm["type"] for mm in m["members"] if mm is not None]
             else:

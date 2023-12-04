@@ -79,6 +79,22 @@
     },
 
     {
+      "name": "IVIM reduceAsn1ToTypeDependencies",
+      "type": "python",
+      "request": "launch",
+      "program": "utils/codegen/reduceAsn1ToTypeDependencies.py",
+      "args": [
+        "-t", "IVIM",
+        "-o", "asn1/reduced/ivim",
+        "asn1/raw/is_ts103301/IVIM-PDU-Descriptions.asn",
+        "asn1/raw/is_ts103301/cdd/ITS-Container.asn",
+        "asn1/raw/ISO19321IVIv2.asn",
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+
+    {
       "name": "CAM asn1ToC",
       "type": "python",
       "request": "launch",
@@ -131,6 +147,21 @@
         "asn1/reduced/mapem/ITS-Container.asn",
         "asn1/reduced/mapem/ISO-TS-19091-addgrp-C-2018.asn",
         "-o", "etsi_its_coding/etsi_its_mapem_coding"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+
+    {
+      "name": "IVIM asn1ToC",
+      "type": "python",
+      "request": "launch",
+      "program": "utils/codegen/asn1ToC.py",
+      "args": [
+        "asn1/reduced/ivim/IVIM-PDU-Descriptions.asn",
+        "asn1/reduced/ivim/ITS-Container.asn",
+        "asn1/reduced/ivim/ISO19321IVIv2.asn",
+        "-o", "etsi_its_coding/etsi_its_ivim_coding"
       ],
       "console": "integratedTerminal",
       "justMyCode": true
