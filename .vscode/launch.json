@@ -158,9 +158,16 @@
       "request": "launch",
       "program": "utils/codegen/asn1ToC.py",
       "args": [
-        "asn1/reduced/ivim/IVIM-PDU-Descriptions.asn",
-        "asn1/reduced/ivim/ITS-Container.asn",
-        "asn1/reduced/ivim/ISO19321IVIv2.asn",
+        "asn1/raw/is_ts103301/IVIM-PDU-Descriptions.asn",
+        "asn1/raw/is_ts103301/cdd/ITS-Container.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO24534-3_ElectronicRegistrationIdentificationVehicleDataModule-patched.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14823-missing.asn",
+        "asn1/raw/TS17419_2014_CITSapplMgmtIDs.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14906(2018)EfcDsrcGenericv7-patched.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14906(2018)EfcDsrcApplicationv6-patched.asn",
+        "asn1/patched/ISO-TS-19091-addgrp-C-2018.asn",
+        "asn1/raw/ISO14816_AVIAEINumberingAndDataStructures.asn",
+        "asn1/raw/ISO19321IVIv2.asn",
         "-o", "etsi_its_coding/etsi_its_ivim_coding"
       ],
       "console": "integratedTerminal",
@@ -220,6 +227,28 @@
         "asn1/reduced/mapem/ITS-Container.asn",
         "asn1/reduced/mapem/ISO-TS-19091-addgrp-C-2018.asn",
         "-o", "etsi_its_msgs/etsi_its_mapem_msgs/msg"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+
+    {
+      "name": "IVIM asn1ToRosMsg",
+      "type": "python",
+      "request": "launch",
+      "program": "utils/codegen/asn1ToRosMsg.py",
+      "args": [
+        "asn1/raw/is_ts103301/IVIM-PDU-Descriptions.asn",
+        "asn1/raw/is_ts103301/cdd/ITS-Container.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO24534-3_ElectronicRegistrationIdentificationVehicleDataModule-patched.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14823-missing.asn",
+        "asn1/raw/TS17419_2014_CITSapplMgmtIDs.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14906(2018)EfcDsrcGenericv7-patched.asn",
+        "asn1/raw/is_ts103301/iso-patched/ISO14906(2018)EfcDsrcApplicationv6-patched.asn",
+        "asn1/patched/ISO-TS-19091-addgrp-C-2018.asn",
+        "asn1/raw/ISO14816_AVIAEINumberingAndDataStructures.asn",
+        "asn1/raw/ISO19321IVIv2.asn",
+        "-o", "etsi_its_msgs/etsi_its_ivim_msgs/msg"
       ],
       "console": "integratedTerminal",
       "justMyCode": true
