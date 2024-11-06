@@ -26,6 +26,7 @@ if(${ROS_VERSION} EQUAL 2)
 
   set(display_headers_to_moc
     include/displays/CAM/cam_display.hpp
+    include/displays/CAM/cam_ts_display.hpp
     include/displays/DENM/denm_display.hpp
     include/displays/CPM/cpm_display.hpp
   )
@@ -36,7 +37,9 @@ if(${ROS_VERSION} EQUAL 2)
 
   set(display_source_files
     src/displays/CAM/cam_display.cpp
-    src/displays/CAM/cam_render_object.cpp
+    src/displays/CAM/cam_render_object.cpp    
+    src/displays/CAM/cam_ts_display.cpp
+    src/displays/CAM/cam_ts_render_object.cpp
     src/displays/DENM/denm_display.cpp
     src/displays/DENM/denm_render_object.cpp
     src/displays/CPM/cpm_display.cpp
