@@ -126,11 +126,11 @@ inline double getHeading(const DENM& denm) {
  * @return IsHeadingPresent-Value (true or false)
  */
 inline bool getIsHeadingPresent(const DENM& denm) {
-  if (denm.denm.location_is_present) {
+  // if (denm.denm.location_is_present) {
     return denm.denm.location.event_position_heading_is_present;
-  } else {
-    throw std::invalid_argument("LocationContainer is not present!");
-  }
+  // } else {
+  //   throw std::invalid_argument("LocationContainer is not present!");
+  // }
 }
 
 /**
@@ -158,11 +158,11 @@ inline double getSpeed(const DENM& denm) {
  * @return IsSpeedPresent-Value (true or false)
  */
 inline bool getIsSpeedPresent(const DENM& denm) {
-  if (denm.denm.location_is_present) {
+  // if (denm.denm.location_is_present) {
     return denm.denm.location.event_speed_is_present;
-  } else {
-    throw std::invalid_argument("LocationContainer is not present!");
-  }
+  // } else {
+  //   throw std::invalid_argument("LocationContainer is not present!");
+  // }
 }
 
 /**
