@@ -108,6 +108,31 @@ inline void setAltitude(Altitude& altitude, const double value) {
 }
 
 /**
+ * @brief Set the PositionConfidenceEllipse object
+ *
+ * @param position_confidence_ellipse object to set
+ * @param semi_major_axis_length SemiMajorAxisLength in cm as decimal number
+ * @param semi_minor_axis_length SemiMinorAxisLength in cm as decimal number
+ * @param semi_major_axis_orientation SemiMajorAxisOrientation in 0.1 degree as decimal number
+ */
+inline void setPositionConfidenceEllipse(PositionConfidenceEllipse& position_confidence_ellipse,
+                                          const double semi_major_axis_length, const double semi_minor_axis_length,
+                                          const double semi_major_axis_orientation) {
+  int64_t semi_major_axis_length_cm = (int64_t)std::round(semi_major_axis_length * 1e1);
+  throwIfOutOfRange(semi_major_axis_length_cm, SemiAxisLength::MIN, SemiAxisLength::MAX, "SemiMajorAxisLength");
+  position_confidence_ellipse.semi_major_axis_length.value = semi_major_axis_length_cm;
+
+  int64_t semi_minor_axis_length_cm = (int64_t)std::round(semi_minor_axis_length * 1e1);
+  throwIfOutOfRange(semi_minor_axis_length_cm, SemiAxisLength::MIN, SemiAxisLength::MAX, "SemiMinorAxisLength");
+  position_confidence_ellipse.semi_minor_axis_length.value = semi_minor_axis_length_cm;
+
+  int64_t semi_major_axis_orientation_deg = (int64_t)std::round(semi_major_axis_orientation * 1e1);
+  throwIfOutOfRange(semi_major_axis_orientation_deg, Wgs84AngleValue::MIN, Wgs84AngleValue::MAX,
+                    "SemiMajorAxisOrientation");
+  position_confidence_ellipse.semi_major_axis_orientation.value = semi_major_axis_orientation_deg;
+}
+
+/**
  * @brief Set the SpeedValue object
  *
  * @param speed object to set
@@ -134,10 +159,10 @@ inline void setSpeed(Speed& speed, const double value) {
 
 /**
  * @brief Sets the reference position in the given ReferencePostion object.
- * 
+ *
  * This function sets the latitude, longitude, and altitude of the reference position.
  * If the altitude is not provided, it is set to AltitudeValue::UNAVAILABLE.
- * 
+ *
  * @param ref_position ReferencePostion or ReferencePositionWithConfidence object to set the reference position in.
  * @param latitude The latitude value position in degree as decimal number.
  * @param longitude The longitude value in degree as decimal number.
@@ -145,7 +170,11 @@ inline void setSpeed(Speed& speed, const double value) {
  */
 template <typename T>
 inline void setReferencePosition(T& ref_position, const double latitude, const double longitude,
-                                 const double altitude = AltitudeValue::UNAVAILABLE) {
+                                 const double altitude = AltitudeValue::UNAVAILABLE,
+                                 const double semi_major_confidence = SemiAxisLength::UNAVAILABLE,
+                                 const double semi_minor_confidence = SemiAxisLength::UNAVAILABLE,
+                                 const double semi_major_orientation = Wgs84AngleValue::UNAVAILABLE) {
+
   setLatitude(ref_position.latitude, latitude);
   setLongitude(ref_position.longitude, longitude);
   if (altitude != AltitudeValue::UNAVAILABLE) {
@@ -154,7 +183,14 @@ inline void setReferencePosition(T& ref_position, const double latitude, const d
     ref_position.altitude.altitude_value.value = AltitudeValue::UNAVAILABLE;
     ref_position.altitude.altitude_confidence.value = AltitudeConfidence::UNAVAILABLE;
   }
-  // TODO: set confidence values
+  if (semi_major_confidence != SemiAxisLength::UNAVAILABLE && semi_minor_confidence != SemiAxisLength::UNAVAILABLE && semi_major_orientation != Wgs84AngleValue::UNAVAILABLE) {
+    setPositionConfidenceEllipse(ref_position.position_confidence_ellipse, semi_major_confidence, semi_minor_confidence,
+                                 semi_major_orientation);
+  } else {
+    ref_position.position_confidence_ellipse.semi_major_axis_length.value = SemiAxisLength::UNAVAILABLE;
+    ref_position.position_confidence_ellipse.semi_minor_axis_length.value = SemiAxisLength::UNAVAILABLE;
+    ref_position.position_confidence_ellipse.semi_major_axis_orientation.value = Wgs84AngleValue::UNAVAILABLE;
+  }
 }
 
 /**

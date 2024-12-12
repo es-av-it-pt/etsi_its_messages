@@ -214,10 +214,16 @@ inline void setLateralAcceleration(CAM& cam, const double lat_accel) {
  * @param latitude The latitude value position in degree as decimal number.
  * @param longitude The longitude value in degree as decimal number.
  * @param altitude The altitude value (above the reference ellipsoid surface) in meter as decimal number (optional).
+ * @param semi_major_confidence The semi-major axis length of the position confidence ellipse in meter as decimal number (optional).
+ * @param semi_minor_confidence The semi-minor axis length of the position confidence ellipse in meter as decimal number (optional).
+ * @param semi_major_orientation The semi-major axis orientation of the position confidence ellipse in degree as decimal number (optional).
  */
 inline void setReferencePosition(CAM& cam, const double latitude, const double longitude,
-                                 const double altitude = AltitudeValue::UNAVAILABLE) {
-  setReferencePosition(cam.cam.cam_parameters.basic_container.reference_position, latitude, longitude, altitude);
+                                 const double altitude = AltitudeValue::UNAVAILABLE,
+                                 const double semi_major_confidence = SemiAxisLength::UNAVAILABLE,
+                                 const double semi_minor_confidence = SemiAxisLength::UNAVAILABLE,
+                                 const double semi_major_orientation = Wgs84AngleValue::UNAVAILABLE) {
+  setReferencePosition(cam.cam.cam_parameters.basic_container.reference_position, latitude, longitude, altitude, semi_major_confidence, semi_minor_confidence, semi_major_orientation);
 }
 
 /**
