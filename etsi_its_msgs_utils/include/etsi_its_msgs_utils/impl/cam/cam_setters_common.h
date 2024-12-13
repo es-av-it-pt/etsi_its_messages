@@ -227,6 +227,56 @@ inline void setReferencePosition(CAM& cam, const double latitude, const double l
 }
 
 /**
+ * @brief Set the DriveDirection object
+ *
+ * This function sets the DriveDirection value of the given DriveDirection object in the vehicle container.
+ *
+ * @param cam CAM to set the DriveDirection
+ * @param value DriveDirection value to set
+ */
+inline void setDriveDirection(CAM& cam, const uint8_t value) {
+  if (value != DriveDirection::FORWARD && value != DriveDirection::BACKWARD && value != DriveDirection::UNAVAILABLE) {
+    throw std::invalid_argument("DriveDirection value is invalid. (" + std::to_string(value) + ")");
+  }
+  cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.drive_direction.value = value;
+}
+
+/**
+ * @brief Set the CurvatureValue object
+ *
+ * This function sets the Curvature value of the given Curvature object in the vehicle container.
+ *
+ * @param cam CAM to set the Curvature
+ * @param value Curvature value to set
+ */
+inline void setCurvatureValue(CAM& cam, const double value, const uint8_t curvature_calculation_mode = CurvatureCalculationMode::UNAVAILABLE) {
+  int64_t curvature = (int64_t)std::round(value * 1e1);
+  throwIfOutOfRange(curvature, CurvatureValue::MIN, CurvatureValue::MAX, "CurvatureValue");
+  if (curvature_calculation_mode != CurvatureCalculationMode::YAW_RATE_USED &&
+      curvature_calculation_mode != CurvatureCalculationMode::YAW_RATE_NOT_USED &&
+      curvature_calculation_mode != CurvatureCalculationMode::UNAVAILABLE) {
+    throw std::invalid_argument("CurvatureCalculationMode value is invalid. (" + std::to_string(curvature_calculation_mode) + ")");
+  }
+  cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.curvature.curvature_value.value = curvature;
+  cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.curvature_calculation_mode.value = curvature_calculation_mode;
+}
+
+/**
+ * @brief Set the YawRateValue object
+ *
+ * This function sets the YawRate value of the given YawRate object in the vehicle container.
+ *
+ * @param cam CAM to set the YawRate
+ * @param value YawRate value to set
+ */
+inline void setYawRateValue(CAM& cam, const double value) {
+  int64_t yaw_rate = (int64_t)std::round(value * 1e1);
+  throwIfOutOfRange(yaw_rate, YawRateValue::MIN, YawRateValue::MAX, "YawRateValue");
+  cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.yaw_rate.yaw_rate_value.value = yaw_rate;
+}
+
+
+/**
  * @brief Set the ReferencePosition of a CAM from a given UTM-Position
  *
  * The position is transformed to latitude and longitude by using GeographicLib::UTMUPS
