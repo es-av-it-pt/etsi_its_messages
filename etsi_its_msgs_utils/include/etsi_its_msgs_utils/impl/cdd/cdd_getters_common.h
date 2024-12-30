@@ -67,6 +67,22 @@ inline double getLongitude(const Longitude& longitude) { return ((double)longitu
 inline double getAltitude(const Altitude& altitude) { return ((double)altitude.altitude_value.value) * 1e-2; }
 
 /**
+ * @brief Get a SemiAxisLength value from the PositionConfidenceEllipse
+ *
+ * @param semi_axis_length to get the SemiAxisLength value from
+ * @return SemiAxisLength value in meter as decimal number
+ */
+inline double getSemiAxisLength(const SemiAxisLength& semi_axis_length) { return ((double)semi_axis_length.value) * 1e-1; }
+
+/**
+ * @brief Get the SemiAxisOrientation value
+ *
+ * @param semi_axis_orientation to get the SemiAxisOrientation value from
+ * @return SemiAxisOrientation value in degree as decimal number
+ */
+inline double getSemiAxisOrientation(const Wgs84AngleValue& semi_axis_orientation) { return ((double)semi_axis_orientation.value) * 1e-1; }
+
+/**
  * @brief Get the vehicle speed
  *
  * @param speed to get the speed value from

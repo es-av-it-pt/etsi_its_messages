@@ -95,6 +95,36 @@ inline double getAltitude(const CAM& cam) {
 }
 
 /**
+ * @brief Get the Major Axis Length of the Position Confidence Ellipse
+ *
+ * @param cam CAM to get the Major Axis Length from
+ * @return Major Axis Length in meter as decimal number
+ */
+inline double getConfidenceEllipseSemiMajorAxisLength(const CAM& cam) {
+  return getSemiAxisLength(cam.cam.cam_parameters.basic_container.reference_position.position_confidence_ellipse.semi_major_axis_length);
+}
+
+/**
+ * @brief Get the Minor Axis Length of the Position Confidence Ellipse
+ *
+ * @param cam CAM to get the Minor Axis Length from
+ * @return Minor Axis Length in meter as decimal number
+ */
+inline double getConfidenceEllipseSemiMinorAxisLength(const CAM& cam) {
+  return getSemiAxisLength(cam.cam.cam_parameters.basic_container.reference_position.position_confidence_ellipse.semi_minor_axis_length);
+}
+
+/**
+ * @brief Get the Major Axis Orientation of the Position Confidence Ellipse
+ *
+ * @param cam CAM to get the Major Axis Orientation from
+ * @return Major Axis Orientation in degree as decimal number
+ */
+inline double getConfidenceEllipseSemiMajorAxisOrientation(const CAM& cam) {
+  return getSemiAxisOrientation(cam.cam.cam_parameters.basic_container.reference_position.position_confidence_ellipse.semi_major_axis_orientation);
+}
+
+/**
  * @brief Get the Heading value
  *
  * 0.0° equals WGS84 North, 90.0° equals WGS84 East, 180.0° equals WGS84 South and 270.0° equals WGS84 West
@@ -191,6 +221,36 @@ inline double getLateralAcceleration(const CAM& cam) {
   } else {
     throw std::invalid_argument("LateralAcceleration is not present!");
   }
+}
+
+/**
+ * @brief Get the Drive Direction
+ *
+ * @param cam CAM to get the DriveDirection value from
+ * @return DriveDirection value
+ */
+inline uint8_t getDriveDirection(const CAM& cam) {
+  return cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.drive_direction.value;
+}
+
+/**
+ * @brief Get the Curvature value
+ *
+ * @param cam CAM to get the Curvature value from
+ * @return Curvature value
+ */
+inline double getCurvatureValue(const CAM& cam) {
+  return cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.curvature.curvature_value.value * 1e-1;
+}
+
+/**
+ * @brief Get the Yaw Rate value
+ *
+ * @param cam CAM to get the Yaw Rate value from
+ * @return Yaw Rate value
+ */
+inline double getYawRateValue(const CAM& cam) {
+  return cam.cam.cam_parameters.high_frequency_container.basic_vehicle_container_high_frequency.yaw_rate.yaw_rate_value.value * 1e-1;
 }
 
 /**

@@ -184,8 +184,7 @@ inline void setReferencePosition(T& ref_position, const double latitude, const d
     ref_position.altitude.altitude_confidence.value = AltitudeConfidence::UNAVAILABLE;
   }
   if (semi_major_confidence != SemiAxisLength::UNAVAILABLE && semi_minor_confidence != SemiAxisLength::UNAVAILABLE && semi_major_orientation != Wgs84AngleValue::UNAVAILABLE) {
-    setPositionConfidenceEllipse(ref_position.position_confidence_ellipse, semi_major_confidence, semi_minor_confidence,
-                                 semi_major_orientation);
+    setPositionConfidenceEllipse(ref_position.position_confidence_ellipse, semi_major_confidence, semi_minor_confidence, semi_major_orientation);
   } else {
     ref_position.position_confidence_ellipse.semi_major_axis_length.value = SemiAxisLength::UNAVAILABLE;
     ref_position.position_confidence_ellipse.semi_minor_axis_length.value = SemiAxisLength::UNAVAILABLE;
