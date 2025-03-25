@@ -13,6 +13,7 @@ if(${ROS_VERSION} EQUAL 2)
 
   find_package(ament_cmake REQUIRED)
   find_package(etsi_its_cam_msgs REQUIRED)
+  find_package(etsi_its_cam_ts_msgs REQUIRED)
   find_package(etsi_its_cpm_ts_msgs REQUIRED)
   find_package(etsi_its_denm_msgs REQUIRED)
   find_package(etsi_its_mapem_ts_msgs REQUIRED)
@@ -30,6 +31,7 @@ if(${ROS_VERSION} EQUAL 2)
 
   set(display_headers_to_moc
     include/displays/CAM/cam_display.hpp
+    include/displays/CAM/cam_ts_display.hpp
     include/displays/DENM/denm_display.hpp
     include/displays/CPM/cpm_display.hpp
     include/displays/MAPEM/mapem_display.hpp
@@ -41,7 +43,9 @@ if(${ROS_VERSION} EQUAL 2)
 
   set(display_source_files
     src/displays/CAM/cam_display.cpp
+    src/displays/CAM/cam_ts_display.cpp
     src/displays/CAM/cam_render_object.cpp
+    src/displays/CAM/cam_ts_render_object.cpp
     src/displays/DENM/denm_display.cpp
     src/displays/DENM/denm_render_object.cpp
     src/displays/CPM/cpm_display.cpp
@@ -72,6 +76,7 @@ if(${ROS_VERSION} EQUAL 2)
     PUBLIC
     rclcpp
     etsi_its_cam_msgs
+    etsi_its_cam_ts_msgs
     etsi_its_cpm_ts_msgs
     etsi_its_denm_msgs
     etsi_its_mapem_ts_msgs
@@ -89,6 +94,7 @@ if(${ROS_VERSION} EQUAL 2)
 
   ament_export_dependencies(
     etsi_its_cam_msgs
+    etsi_its_cam_ts_msgs
     etsi_its_cpm_ts_msgs
     etsi_its_denm_msgs
     etsi_its_mapem_ts_msgs
