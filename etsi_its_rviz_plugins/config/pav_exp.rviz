@@ -48,7 +48,7 @@ Visualization Manager:
       Zoom: 16
     - Class: rviz_common/Group
       Displays:
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -57,7 +57,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 1
           Timeout: 10
           Topic:
@@ -71,7 +71,7 @@ Visualization Manager:
       Name: Incoming
     - Class: rviz_common/Group
       Displays:
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -80,7 +80,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 1
           Timeout: 10
           Topic:

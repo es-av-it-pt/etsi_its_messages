@@ -48,7 +48,7 @@ Visualization Manager:
       Zoom: 16
     - Class: rviz_common/Group
       Displays:
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -57,7 +57,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 10
           Timeout: 2
           Topic:
@@ -67,7 +67,7 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /vehicle_7301/CAM
           Value: true
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -76,7 +76,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 10
           Timeout: 2
           Topic:
@@ -86,7 +86,7 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /vehicle_7303/CAM
           Value: true
-        - Class: etsi_its_msgs/DENMDisplay
+        - Class: etsi_its_msgs/DENM
           Color: 255; 0; 25
           Enabled: true
           Metadata:
@@ -96,7 +96,7 @@ Visualization Manager:
             StationID: true
             SubCauseCode: true
             Value: true
-          Name: DENMDisplay
+          Name: DENM
           Timeout: 60
           Topic:
             Depth: 5
@@ -109,7 +109,7 @@ Visualization Manager:
       Name: Incoming
     - Class: rviz_common/Group
       Displays:
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -118,7 +118,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 10
           Timeout: 2
           Topic:
@@ -128,7 +128,7 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /vehicle_7301/artery/CAM
           Value: true
-        - Class: etsi_its_msgs/CAMTSDisplay
+        - Class: etsi_its_msgs/CAMTS
           Color: 0; 170; 255
           Enabled: true
           Metadata:
@@ -137,7 +137,7 @@ Visualization Manager:
             Speed: true
             StationID: true
             Value: true
-          Name: CAMTSDisplay
+          Name: CAMTS
           Scale: 10
           Timeout: 2
           Topic:
@@ -147,7 +147,7 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /vehicle_7303/artery/CAM
           Value: true
-        - Class: etsi_its_msgs/DENMDisplay
+        - Class: etsi_its_msgs/DENM
           Color: 255; 0; 25
           Enabled: true
           Metadata:
@@ -157,7 +157,7 @@ Visualization Manager:
             StationID: true
             SubCauseCode: true
             Value: true
-          Name: DENMDisplay
+          Name: DENM
           Timeout: 60
           Topic:
             Depth: 5
