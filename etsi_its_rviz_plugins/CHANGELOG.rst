@@ -2,6 +2,31 @@
 Changelog for package etsi_its_rviz_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.3.0 (2025-08-07)
+------------------
+* Merge pull request `#92 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/92>`_ from ika-rwth-aachen/fix-rviz-config
+  Fix rviz config after renaming displays
+* Merge pull request `#89 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/89>`_ from ika-rwth-aachen/improvement/cpm-plugin
+  Add object ids to RViz CPM plugin; rename plugins; add icons
+* Merge pull request `#88 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/88>`_ from ika-rwth-aachen/kilted
+* Merge pull request `#83 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/83>`_ from ika-rwth-aachen/deprecate-ros1
+  Deprecate ROS 1 Noetic
+* Merge pull request `#86 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/86>`_ from ika-rwth-aachen/fix/spatem_time_mark_interpretation
+  Fix/spatem time mark interpretation
+* Contributors: Fabian Thomsen, Jean-Pierre Busch, Lennart Reiher
+
+3.2.1 (2025-05-16)
+------------------
+
+3.2.0 (2025-04-22)
+------------------
+* Merge branch 'main' into uulm-mcm
+* Merge pull request `#73 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/73>`_ from ika-rwth-aachen/fix/spatem-viz
+  Fix visualization of SPATEMS on Startup of RViz
+* Merge pull request `#70 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/70>`_ from ika-rwth-aachen/improvement/display_different_utm_zones_at_once
+  Improvement/display different utm zones at once
+* Contributors: Guido Küppers, Jean-Pierre Busch
+
 3.1.0 (2025-02-17)
 ------------------
 * Merge pull request `#67 <https://github.com/ika-rwth-aachen/etsi_its_messages/issues/67>`_ from ika-rwth-aachen/update-copyright

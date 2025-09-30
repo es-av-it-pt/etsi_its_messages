@@ -34,48 +34,25 @@ SOFTWARE.
 #include <etsi_its_denm_conversion/convertDENM.h>
 #include <etsi_its_denm_ts_conversion/convertDENM.h>
 #include <etsi_its_mapem_ts_conversion/convertMAPEM.h>
+#include <etsi_its_mcm_uulm_conversion/convertMCM.h>
 #include <etsi_its_spatem_ts_conversion/convertSPATEM.h>
 #include <etsi_its_vam_ts_conversion/convertVAM.h>
-#ifdef ROS1
-#include <nodelet/nodelet.h>
-#include <ros/ros.h>
-#include <udp_msgs/UdpPacket.h>
-#include <etsi_its_cam_msgs/CAM.h>
-#include <etsi_its_cam_ts_msgs/CAM.h>
-#include <etsi_its_cpm_ts_msgs/CollectivePerceptionMessage.h>
-#include <etsi_its_denm_msgs/DENM.h>
-#include <etsi_its_denm_ts_msgs/DENM.h>
-#include <etsi_its_mapem_ts_msgs/MAPEM.h>
-#include <etsi_its_spatem_ts_msgs/SPATEM.h>
-#include <etsi_its_vam_ts_msgs/VAM.h>
-#else
 #include <etsi_its_cam_msgs/msg/cam.hpp>
 #include <etsi_its_cam_ts_msgs/msg/cam.hpp>
 #include <etsi_its_cpm_ts_msgs/msg/collective_perception_message.hpp>
 #include <etsi_its_denm_msgs/msg/denm.hpp>
 #include <etsi_its_denm_ts_msgs/msg/denm.hpp>
 #include <etsi_its_mapem_ts_msgs/msg/mapem.hpp>
+#include <etsi_its_mcm_uulm_msgs/msg/mcm.hpp>
 #include <etsi_its_spatem_ts_msgs/msg/spatem.hpp>
 #include <etsi_its_vam_ts_msgs/msg/vam.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <udp_msgs/msg/udp_packet.hpp>
-#endif
 
 
 namespace etsi_its_conversion {
 
 
-#ifdef ROS1
-using namespace udp_msgs;
-namespace cam_msgs = etsi_its_cam_msgs;
-namespace cam_ts_msgs = etsi_its_cam_ts_msgs;
-namespace cpm_ts_msgs = etsi_its_cpm_ts_msgs;
-namespace denm_msgs = etsi_its_denm_msgs;
-namespace denm_ts_msgs = etsi_its_denm_ts_msgs;
-namespace mapem_ts_msgs = etsi_its_mapem_ts_msgs;
-namespace spatem_ts_msgs = etsi_its_spatem_ts_msgs;
-namespace vam_ts_msgs = etsi_its_vam_ts_msgs;
-#else
 using namespace udp_msgs::msg;
 namespace cam_msgs = etsi_its_cam_msgs::msg;
 namespace cam_ts_msgs = etsi_its_cam_ts_msgs::msg;
@@ -83,24 +60,16 @@ namespace cpm_ts_msgs = etsi_its_cpm_ts_msgs::msg;
 namespace denm_msgs = etsi_its_denm_msgs::msg;
 namespace denm_ts_msgs = etsi_its_denm_ts_msgs::msg;
 namespace mapem_ts_msgs = etsi_its_mapem_ts_msgs::msg;
+namespace mcm_uulm_msgs = etsi_its_mcm_uulm_msgs::msg;
 namespace spatem_ts_msgs = etsi_its_spatem_ts_msgs::msg;
 namespace vam_ts_msgs = etsi_its_vam_ts_msgs::msg;
-#endif
 
 
-#ifdef ROS1
-class Converter : public nodelet::Nodelet {
-#else
 class Converter : public rclcpp::Node {
-#endif
 
   public:
 
-#ifdef ROS1
-    virtual void onInit();
-#else
     explicit Converter(const rclcpp::NodeOptions& options);
-#endif
 
   protected:
 
@@ -130,18 +99,10 @@ class Converter : public rclcpp::Node {
     template <typename T_ros, typename T_struct>
     bool encodeRosMessageToUdpPacketMessage(const T_ros& msg, UdpPacket& udp_msg, const asn_TYPE_descriptor_t* type_descriptor, std::function<void(const T_ros&, T_struct&)> conversion_fn, const int btp_header_destination_port);
 
-#ifdef ROS1
-    void udpCallback(const UdpPacket::ConstPtr udp_msg);
-#else
     void udpCallback(const UdpPacket::UniquePtr udp_msg);
-#endif
 
     template <typename T_ros, typename T_struct>
-#ifdef ROS1
-    void rosCallback(const typename T_ros::ConstPtr msg,
-#else
     void rosCallback(const typename T_ros::UniquePtr msg,
-#endif
                      const std::string& type, const asn_TYPE_descriptor_t* type_descriptor, std::function<void(const T_ros&, T_struct&)> conversion_fn);
 
   protected:
@@ -160,6 +121,8 @@ class Converter : public rclcpp::Node {
     static const std::string kOutputTopicDenmTs;
     static const std::string kInputTopicMapemTs;
     static const std::string kOutputTopicMapemTs;
+    static const std::string kInputTopicMcmUulm;
+    static const std::string kOutputTopicMcmUulm;
     static const std::string kInputTopicSpatemTs;
     static const std::string kOutputTopicSpatemTs;
     static const std::string kInputTopicVamTs;
@@ -190,15 +153,7 @@ class Converter : public rclcpp::Node {
     std::vector<std::string> udp2ros_etsi_types_;
     int subscriber_queue_size_;
     int publisher_queue_size_;
-    bool check_constraints_before_encoding_;
 
-#ifdef ROS1
-    ros::NodeHandle private_node_handle_;
-    std::shared_ptr<ros::Subscriber> subscriber_udp_;
-    std::unordered_map<std::string, std::shared_ptr<ros::Publisher>> publishers_;
-    std::unordered_map<std::string, std::shared_ptr<ros::Subscriber>> subscribers_;
-    std::shared_ptr<ros::Publisher> publisher_udp_;
-#else
     rclcpp::Subscription<UdpPacket>::SharedPtr subscriber_udp_;
     std::unordered_map<std::string, rclcpp::SubscriptionBase::SharedPtr> subscribers_;
     rclcpp::Publisher<cam_msgs::CAM>::SharedPtr publisher_cam_;
@@ -207,10 +162,10 @@ class Converter : public rclcpp::Node {
     rclcpp::Publisher<denm_msgs::DENM>::SharedPtr publisher_denm_;
     rclcpp::Publisher<denm_ts_msgs::DENM>::SharedPtr publisher_denm_ts_;
     rclcpp::Publisher<mapem_ts_msgs::MAPEM>::SharedPtr publisher_mapem_ts_;
+    rclcpp::Publisher<mcm_uulm_msgs::MCM>::SharedPtr publisher_mcm_uulm_;
     rclcpp::Publisher<spatem_ts_msgs::SPATEM>::SharedPtr publisher_spatem_ts_;
     rclcpp::Publisher<vam_ts_msgs::VAM>::SharedPtr publisher_vam_ts_;
     rclcpp::Publisher<UdpPacket>::SharedPtr publisher_udp_;
-#endif
 
 };
 
