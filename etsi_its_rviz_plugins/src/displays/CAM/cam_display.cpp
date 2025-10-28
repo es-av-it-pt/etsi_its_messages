@@ -38,6 +38,8 @@ SOFTWARE.
 #include "rviz_common/properties/color_property.hpp"
 #include "rviz_common/properties/float_property.hpp"
 #include "rviz_common/properties/bool_property.hpp"
+#include "rviz_common/properties/ros_topic_property.hpp"
+#include "rviz_common/properties/qos_profile_property.hpp"
 
 #include "rviz_common/properties/parse_color.hpp"
 
@@ -48,20 +50,22 @@ namespace displays
 
 CAMDisplay::CAMDisplay()
 {
-  // General Properties
+  // CAM (release 1) properties
+  viz_cam_ = new rviz_common::properties::BoolProperty("Visualize CAMs", true,
+    "Show CAM (release 1) messages", this, SLOT(changedCAMViz()));
   buffer_timeout_ = new rviz_common::properties::FloatProperty(
     "Timeout", 0.1f,
-    "Time (in s) until objects disappear", this);
+    "Time (in s) until objects disappear", viz_cam_);
   buffer_timeout_->setMin(0);
   bb_scale_ = new rviz_common::properties::FloatProperty(
     "Scale", 1.0f,
-    "Scale of objects", this);
+    "Scale of objects", viz_cam_);
   bb_scale_->setMin(0.01);
   color_property_ = new rviz_common::properties::ColorProperty(
     "Color", QColor(25, 0, 255),
-    "Object color", this);
+    "Object color", viz_cam_);
   show_meta_ = new rviz_common::properties::BoolProperty("Metadata", true,
-    "Show metadata as text next to objects", this);
+    "Show metadata as text next to objects", viz_cam_);
   text_color_property_ = new rviz_common::properties::ColorProperty(
     "Color", QColor(25, 0, 255),
     "Text color", show_meta_);
@@ -71,6 +75,35 @@ CAMDisplay::CAMDisplay()
   show_speed_ = new rviz_common::properties::BoolProperty("Speed", true,
     "Show speed", show_meta_);
 
+  // CAM TS (release 2) properties
+  cam_ts_topic_property_ = new rviz_common::properties::RosTopicProperty(
+    "CAM TS Topic", "/etsi_its_conversion/cam_ts/out",
+    rosidl_generator_traits::data_type<etsi_its_cam_ts_msgs::msg::CAM>(),
+    "Topic of CAM TS (release 2) messages", this, SLOT(changedCAMTSTopic()));
+  cam_ts_qos_property_ = new rviz_common::properties::QosProfileProperty(cam_ts_topic_property_, cam_ts_qos_profile_);
+  viz_cam_ts_ = new rviz_common::properties::BoolProperty("Visualize CAMs TS", false,
+    "Show CAM TS (release 2) messages", this, SLOT(changedCAMTSViz()));
+  buffer_timeout_ts_ = new rviz_common::properties::FloatProperty(
+    "Timeout", 0.1f,
+    "Time (in s) until objects disappear", viz_cam_ts_);
+  buffer_timeout_ts_->setMin(0);
+  bb_scale_ts_ = new rviz_common::properties::FloatProperty(
+    "Scale", 1.0f,
+    "Scale of objects", viz_cam_ts_);
+  bb_scale_ts_->setMin(0.01);
+  color_property_ts_ = new rviz_common::properties::ColorProperty(
+    "Color", QColor(25, 0, 255),
+    "Object color", viz_cam_ts_);
+  show_meta_ts_ = new rviz_common::properties::BoolProperty("Metadata", true,
+    "Show metadata as text next to objects", viz_cam_ts_);
+  text_color_property_ts_ = new rviz_common::properties::ColorProperty(
+    "Color", QColor(25, 0, 255),
+    "Text color", show_meta_ts_);
+  char_height_ts_ = new rviz_common::properties::FloatProperty("Scale", 4.0, "Scale of text", show_meta_ts_);
+  show_station_id_ts_ = new rviz_common::properties::BoolProperty("StationID", true,
+    "Show StationID", show_meta_ts_);
+  show_speed_ts_ = new rviz_common::properties::BoolProperty("Speed", true,
+    "Show speed", show_meta_ts_);
 }
 
 CAMDisplay::~CAMDisplay()
@@ -87,6 +120,14 @@ void CAMDisplay::onInitialize()
   auto nodeAbstraction = context_->getRosNodeAbstraction().lock();
   rviz_node_ = nodeAbstraction->get_raw_node();
 
+  // Initialize topic and QoS properties for CAM TS
+  cam_ts_topic_property_->initialize(nodeAbstraction);
+  cam_ts_qos_property_->initialize(
+      [this](rclcpp::QoS profile) {
+        cam_ts_qos_profile_ = profile;
+        changedCAMTSTopic();
+      });
+
   manual_object_ = scene_manager_->createManualObject();
   manual_object_->setDynamic(true);
   scene_node_->attachObject(manual_object_);
@@ -96,9 +137,82 @@ void CAMDisplay::reset()
 {
   RTDClass::reset();
   manual_object_->clear();
+  cam_ts_sub_.reset();
 }
 
+void CAMDisplay::changedCAMViz() {
+  if(!viz_cam_->getBool()) {
+    deleteStatus("Topic");
+  }
+}
+
+void CAMDisplay::changedCAMTSViz() {
+  if(!viz_cam_ts_->getBool()) {
+    deleteStatus("CAM TS Topic");
+    cam_ts_sub_.reset();
+  } 
+  else changedCAMTSTopic();
+}
+
+void CAMDisplay::changedCAMTSTopic() {
+  cam_ts_sub_.reset();
+  received_ts_ = 0;
+  if(cam_ts_topic_property_->isEmpty()) {
+    setStatus(
+        rviz_common::properties::StatusProperty::Warn,
+        "CAM TS Topic",
+        QString("Error subscribing: Empty topic name"));
+      return;
+  }
+
+  std::map<std::string, std::vector<std::string>> published_topics = rviz_node_->get_topic_names_and_types();
+  bool topic_available = false;
+  std::string topic_message_type;
+  for (const auto & topic : published_topics) {
+    // Only add topics whose type matches.
+    if(topic.first == cam_ts_topic_property_->getTopicStd()) {
+      topic_available = true;
+      for (const auto & type : topic.second) {
+        topic_message_type = type;
+        if (type == "etsi_its_cam_ts_msgs/msg/CAM") {
+          cam_ts_sub_ = rviz_node_->create_subscription<etsi_its_cam_ts_msgs::msg::CAM>(
+            cam_ts_topic_property_->getTopicStd(),
+            cam_ts_qos_profile_,
+            [this](const etsi_its_cam_ts_msgs::msg::CAM::SharedPtr msg) {
+              // Forward release 2 message to unified handler
+              this->processMessage(std::variant<etsi_its_cam_msgs::msg::CAM, etsi_its_cam_ts_msgs::msg::CAM>(*msg));
+            });
+          return;
+        }
+      }
+    }
+  }
+  if(!topic_available) {
+    setStatus(
+      rviz_common::properties::StatusProperty::Warn, "CAM TS Topic",
+      QString("Error subscribing to ") + QString::fromStdString(cam_ts_topic_property_->getTopicStd())
+      + QString(": Topic is not available!"));
+  }
+  else {
+    setStatus(
+      rviz_common::properties::StatusProperty::Warn, "CAM TS Topic",
+      QString("Error subscribing to ") + QString::fromStdString(cam_ts_topic_property_->getTopicStd())
+      + QString(": Message type ") + QString::fromStdString(topic_message_type) + QString::fromStdString(" does not equal etsi_its_cam_ts_msgs::msg::CAM!"));
+  }
+
+}
+
+// Base-class override but delegate to the unified handler
 void CAMDisplay::processMessage(etsi_its_cam_msgs::msg::CAM::ConstSharedPtr msg)
+{
+  processMessage(std::variant<etsi_its_cam_msgs::msg::CAM, etsi_its_cam_ts_msgs::msg::CAM>(*msg));
+}
+
+// Unified handler used by both release 1 (base-class override delegates to this) and release 2 subscription lambda
+void CAMDisplay::processMessage(const std::variant<
+    etsi_its_cam_msgs::msg::CAM,
+    etsi_its_cam_ts_msgs::msg::CAM
+  > & msg_variant)
 {
   // Generate CAM render object from message
   rclcpp::Time now = rviz_node_->now();
@@ -110,11 +224,18 @@ void CAMDisplay::processMessage(etsi_its_cam_msgs::msg::CAM::ConstSharedPtr msg)
     return;
   }
 
-  CAMRenderObject cam(*msg, now, getLeapSecondInsertionsSince2004(static_cast<uint64_t>(now.seconds())));
+  CAMRenderObject cam(msg_variant, now, getLeapSecondInsertionsSince2004(static_cast<uint64_t>(now.seconds())));
   if (!cam.validateFloats()) {
-    setStatus(
-      rviz_common::properties::StatusProperty::Error, "Topic",
-      "Message contained invalid floating point values (nans or infs)");
+    // report error on the proper status entry depending on origin
+    if (cam.isTS()) {
+      setStatus(
+        rviz_common::properties::StatusProperty::Error, "CAM TS Topic",
+        "Message contained invalid floating point values (nans or infs)");
+    } else {
+      setStatus(
+        rviz_common::properties::StatusProperty::Error, "Topic",
+        "Message contained invalid floating point values (nans or infs)");
+    }
     return;
   }
 
@@ -123,6 +244,13 @@ void CAMDisplay::processMessage(etsi_its_cam_msgs::msg::CAM::ConstSharedPtr msg)
   if (it != cams_.end()) it->second = cam; // Key exists, update the value
   else cams_.insert(std::make_pair(cam.getStationID(), cam));
 
+  // Update CAM TS message counter and status shown in RViz
+  if (cam.isTS()) {
+    ++received_ts_;
+    setStatus(
+      rviz_common::properties::StatusProperty::Ok, "CAM TS Topic", QString::number(received_ts_) + " messages received");
+  }
+
   return;
 }
 
@@ -130,7 +258,9 @@ void CAMDisplay::update(float, float)
 {
   // Check for outdated CAMs
   for (auto it = cams_.begin(); it != cams_.end(); ) {
-    if (it->second.getAge(rviz_node_->now()) > buffer_timeout_->getFloat()) {
+    CAMRenderObject & obj = it->second;
+    double timeout = obj.isTS() ? buffer_timeout_ts_->getFloat() : buffer_timeout_->getFloat();
+    if (obj.getAge(rviz_node_->now()) > timeout) {
       it = cams_.erase(it);
     }
     else {
@@ -144,6 +274,11 @@ void CAMDisplay::update(float, float)
   for(auto it = cams_.begin(); it != cams_.end(); ++it) {
 
     CAMRenderObject cam = it->second;
+
+    // Skip rendering depending on the visualize checkboxes
+    if (cam.isTS() && !viz_cam_ts_->getBool()) continue;
+    if (!cam.isTS() && !viz_cam_->getBool()) continue;
+
     Ogre::Vector3 sn_position;
     Ogre::Quaternion sn_orientation;
     if (!context_->getFrameManager()->getTransform(cam.getHeader(), sn_position, sn_orientation)) {
@@ -210,34 +345,34 @@ void CAMDisplay::update(float, float)
 
     // set the dimensions of bounding box
     Ogre::Vector3 dims;
-    double scale = bb_scale_->getFloat();
+    double scale = cam.isTS() ? bb_scale_ts_->getFloat() : bb_scale_->getFloat();
     dims.x = dimensions.x*scale;
     dims.y = dimensions.y*scale;
     dims.z = dimensions.z*scale;
     bbox->setScale(dims);
     // set the color of bounding box
-    Ogre::ColourValue bb_color = rviz_common::properties::qtToOgre(color_property_->getColor());
+    Ogre::ColourValue bb_color = rviz_common::properties::qtToOgre((cam.isTS() ? color_property_ts_->getColor() : color_property_->getColor()));
     bbox->setColor(bb_color);
     bboxs_.push_back(bbox);
 
     // Visualize meta-information as text
-    if(show_meta_->getBool()) {
+    if((cam.isTS() ? show_meta_ts_->getBool() : show_meta_->getBool())) {
       std::string text;
-      if(show_station_id_->getBool()) {
+      if((cam.isTS() ? show_station_id_ts_->getBool() : show_station_id_->getBool())) {
         text+="StationID: " + std::to_string(cam.getStationID());
         text+="\n";
       }
-      if(show_speed_->getBool()) {
+      if((cam.isTS() ? show_speed_ts_->getBool() : show_speed_->getBool())) {
         text+="Speed: " + std::to_string((int)(cam.getSpeed()*3.6)) + " km/h";
       }
-      if(!text.size()) return;
-      std::shared_ptr<rviz_rendering::MovableText> text_render = std::make_shared<rviz_rendering::MovableText>(text, "Liberation Sans", char_height_->getFloat());
+      if(!text.size()) continue; // skip adding empty text
+      std::shared_ptr<rviz_rendering::MovableText> text_render = std::make_shared<rviz_rendering::MovableText>(text, "Liberation Sans", (cam.isTS() ? char_height_ts_->getFloat() : char_height_->getFloat()));
       double height = dims.z;
       height+=text_render->getBoundingRadius();
       Ogre::Vector3 offs(0.0, 0.0, height);
       // There is a bug in rviz_rendering::MovableText::setGlobalTranslation https://github.com/ros2/rviz/issues/974
       text_render->setGlobalTranslation(offs);
-      Ogre::ColourValue text_color = rviz_common::properties::qtToOgre(text_color_property_->getColor());
+      Ogre::ColourValue text_color = rviz_common::properties::qtToOgre((cam.isTS() ? text_color_property_ts_->getColor() : text_color_property_->getColor()));
       text_render->setColor(text_color);
       child_scene_node->attachObject(text_render.get());
       texts_.push_back(text_render);
