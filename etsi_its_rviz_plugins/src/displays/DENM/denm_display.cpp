@@ -29,16 +29,18 @@ namespace displays
 
 DENMDisplay::DENMDisplay()
 {
-  // General Properties
+  // DENM (release 1) properties
+  viz_denm_ = new rviz_common::properties::BoolProperty("Visualize DENMs", true,
+    "Show DENM (release 1) messages", this, SLOT(changedDENMViz()));
   buffer_timeout_ = new rviz_common::properties::FloatProperty(
     "Timeout", 5.0f,
-    "Time (in s) until visualizations disappear", this);
+    "Time (in s) until visualizations disappear", viz_denm_);
   buffer_timeout_->setMin(0);
   color_property_ = new rviz_common::properties::ColorProperty(
     "Color", QColor(255, 0, 25),
-    "Color", this);
+    "Color", viz_denm_);
   show_meta_ = new rviz_common::properties::BoolProperty("Metadata", true, 
-    "Show metadata as text next to objects", this);
+    "Show metadata as text next to objects", viz_denm_);
   text_color_property_ = new rviz_common::properties::ColorProperty(
     "Color", QColor(255, 0, 25),
     "Text color", show_meta_);
@@ -48,7 +50,34 @@ DENMDisplay::DENMDisplay()
   show_cause_code_ = new rviz_common::properties::BoolProperty("CauseCode", true, "Show CauseCode", show_meta_);
   show_sub_cause_code_ = new rviz_common::properties::BoolProperty("SubCauseCode", true, "Show SubCauseCode", show_meta_);
 
-  show_overlay_prop_ = new rviz_common::properties::BoolProperty("Overlay", false, "Display DENM as overlay", this);
+  // DENM TS (release 2) properties
+  denm_ts_topic_property_ = new rviz_common::properties::RosTopicProperty(
+    "DENM TS Topic", "/etsi_its_conversion/denm_ts/out",
+    rosidl_generator_traits::data_type<etsi_its_denm_ts_msgs::msg::DENM>(),
+    "Topic of DENM TS (release 2) messages", this, SLOT(changedDENMTSTopic()));
+  denm_ts_qos_property_ = new rviz_common::properties::QosProfileProperty(denm_ts_topic_property_, denm_ts_qos_profile_);
+  viz_denm_ts_ = new rviz_common::properties::BoolProperty("Visualize DENMs TS", false,
+    "Show DENM TS (release 2) messages", this, SLOT(changedDENMTSViz()));
+  buffer_timeout_ts_ = new rviz_common::properties::FloatProperty(
+    "Timeout", 60.0f,
+    "Time (in s) until visualizations disappear", viz_denm_ts_);
+  buffer_timeout_ts_->setMin(0);
+  color_property_ts_ = new rviz_common::properties::ColorProperty(
+    "Color", QColor(255, 0, 25),
+    "Color", viz_denm_ts_);
+  show_meta_ts_ = new rviz_common::properties::BoolProperty("Metadata", true, 
+    "Show metadata as text next to objects", viz_denm_ts_);
+  text_color_property_ts_ = new rviz_common::properties::ColorProperty(
+    "Color", QColor(255, 0, 25),
+    "Text color", show_meta_ts_);
+  char_height_ts_ = new rviz_common::properties::FloatProperty("Scale", 4.0, "Scale of text", show_meta_ts_);
+  show_station_id_ts_ = new rviz_common::properties::BoolProperty("StationID", true,
+    "Show StationID", show_meta_ts_);
+  show_cause_code_ts_ = new rviz_common::properties::BoolProperty("CauseCode", true, "Show CauseCode", show_meta_ts_);
+  show_sub_cause_code_ts_ = new rviz_common::properties::BoolProperty("SubCauseCode", true, "Show SubCauseCode", show_meta_ts_);
+
+  // Overlay properties
+  show_overlay_prop_ = new rviz_common::properties::BoolProperty("Overlay", false, "Display DENM as overlay", viz_denm_);
   bg_color_prop_ = new rviz_common::properties::ColorProperty("BG Color", QColor(255, 85, 0), "Background color of the overlay", show_overlay_prop_);
   bg_alpha_prop_ = new rviz_common::properties::FloatProperty("BG Alpha", 0.2f, "Background alpha of the overlay", bg_color_prop_);
   fg_color_prop_ = new rviz_common::properties::ColorProperty("FG Color", QColor(255, 255, 255), "Foreground color of the overlay", show_overlay_prop_);
@@ -58,15 +87,29 @@ DENMDisplay::DENMDisplay()
   text_size_prop_ = new rviz_common::properties::IntProperty("Text Size", 16, "Font size of the overlay text", show_overlay_prop_);
   line_width_prop_ = new rviz_common::properties::IntProperty("Line Width", 1, "Line width of the overlay", show_overlay_prop_);
 
+  // Overlay properties for DENM TS
+  show_overlay_prop_ts_ = new rviz_common::properties::BoolProperty("Overlay", false, "Display DENM TS as overlay", viz_denm_ts_);
+  bg_color_prop_ts_ = new rviz_common::properties::ColorProperty("BG Color", QColor(255, 85, 0), "Background color of the overlay", show_overlay_prop_ts_);
+  bg_alpha_prop_ts_ = new rviz_common::properties::FloatProperty("BG Alpha", 0.2f, "Background alpha of the overlay", bg_color_prop_ts_);
+  fg_color_prop_ts_ = new rviz_common::properties::ColorProperty("FG Color", QColor(255, 255, 255), "Foreground color of the overlay", show_overlay_prop_ts_);
+  fg_alpha_prop_ts_ = new rviz_common::properties::FloatProperty("FG Alpha", 0.8f, "Foreground alpha of the overlay", fg_color_prop_ts_);
+  top_offset_prop_ts_ = new rviz_common::properties::IntProperty("Top Offset", 0, "Vertical offset of the overlay", show_overlay_prop_ts_);
+  left_offset_prop_ts_ = new rviz_common::properties::IntProperty("Left Offset", 0, "Horizontal offset of the overlay", show_overlay_prop_ts_);
+  text_size_prop_ts_ = new rviz_common::properties::IntProperty("Text Size", 16, "Font size of the overlay text", show_overlay_prop_ts_);
+  line_width_prop_ts_ = new rviz_common::properties::IntProperty("Line Width", 1, "Line width of the overlay", show_overlay_prop_ts_);
+
   QFontDatabase database;
   font_families_ = database.families();
   font_prop_ = new rviz_common::properties::EnumProperty("Font", "DejaVu Sans", "Font of the overlay text", show_overlay_prop_);
+  font_prop_ts_ = new rviz_common::properties::EnumProperty("Font", "DejaVu Sans", "Font of the overlay text", show_overlay_prop_ts_);
   for (int i = 0; i < font_families_.size(); i++) {
     font_prop_->addOption(font_families_[i], i);
+    font_prop_ts_->addOption(font_families_[i], i);
   }
 
   static int idx = 0;
   overlay_.reset(new rviz_plugin::OverlayObject("Ogre Overlay number " + std::to_string(idx)));
+  overlay_ts_.reset(new rviz_plugin::OverlayObject("Ogre Overlay TS number " + std::to_string(idx)));
   idx++;
 }
 
@@ -86,6 +129,14 @@ void DENMDisplay::onInitialize()
   auto nodeAbstraction = context_->getRosNodeAbstraction().lock();
   rviz_node_ = nodeAbstraction->get_raw_node();
 
+  // initialize topic and QoS properties for DENM TS
+  denm_ts_topic_property_->initialize(nodeAbstraction);
+  denm_ts_qos_property_->initialize(
+      [this](rclcpp::QoS profile) {
+        denm_ts_qos_profile_ = profile;
+        changedDENMTSTopic();
+      });
+
   manual_object_ = scene_manager_->createManualObject();
   manual_object_->setDynamic(true);
   scene_node_->attachObject(manual_object_);
@@ -97,38 +148,152 @@ void DENMDisplay::reset()
   manual_object_->clear();
   denms_.clear();
   overlay_->hide();
+  overlay_ts_->hide();
+  denm_ts_sub_.reset();
 }
 
+void DENMDisplay::changedDENMViz() {
+  if(!viz_denm_->getBool()) {
+    deleteStatus("Topic");
+  }
+}
+
+void DENMDisplay::changedDENMTSViz() {
+  if(!viz_denm_ts_->getBool()) {
+    deleteStatus("DENM TS Topic");
+    denm_ts_sub_.reset();
+  } else changedDENMTSTopic();
+}
+
+void DENMDisplay::changedDENMTSTopic() {
+  denm_ts_sub_.reset();
+  received_ts_ = 0;
+  if(denm_ts_topic_property_->isEmpty()) {
+    setStatus(
+        rviz_common::properties::StatusProperty::Warn,
+        "DENM TS Topic",
+        QString("Error subscribing: Empty topic name"));
+      return;
+  }
+
+  std::map<std::string, std::vector<std::string>> published_topics = rviz_node_->get_topic_names_and_types();
+  bool topic_available = false;
+  std::string topic_message_type;
+  for (const auto & topic : published_topics) {
+    if(topic.first == denm_ts_topic_property_->getTopicStd()) {
+      topic_available = true;
+      for (const auto & type : topic.second) {
+        topic_message_type = type;
+        if (type == "etsi_its_denm_ts_msgs/msg/DENM") {
+          denm_ts_sub_ = rviz_node_->create_subscription<etsi_its_denm_ts_msgs::msg::DENM>(
+            denm_ts_topic_property_->getTopicStd(),
+            denm_ts_qos_profile_,
+            [this](const etsi_its_denm_ts_msgs::msg::DENM::SharedPtr msg) {
+              this->processMessage(std::variant<etsi_its_denm_msgs::msg::DENM, etsi_its_denm_ts_msgs::msg::DENM>(*msg));
+            });
+          return;
+        }
+      }
+    }
+  }
+  if(!topic_available) {
+    setStatus(
+      rviz_common::properties::StatusProperty::Warn, "DENM TS Topic",
+      QString("Error subscribing to ") + QString::fromStdString(denm_ts_topic_property_->getTopicStd())
+      + QString(": Topic is not available!"));
+  }
+  else {
+    setStatus(
+      rviz_common::properties::StatusProperty::Warn, "DENM TS Topic",
+      QString("Error subscribing to ") + QString::fromStdString(denm_ts_topic_property_->getTopicStd())
+      + QString(": Message type ") + QString::fromStdString(topic_message_type) + QString::fromStdString(" does not equal etsi_its_denm_ts_msgs::msg::DENM!"));
+  }
+}
+
+// Base-class override but delegate to the unified handler
 void DENMDisplay::processMessage(etsi_its_denm_msgs::msg::DENM::ConstSharedPtr msg)
 {
+  processMessage(std::variant<etsi_its_denm_msgs::msg::DENM, etsi_its_denm_ts_msgs::msg::DENM>(*msg));
+}
+
+// Unified handler for both DENM (release 1) and DENM TS (release 2)
+void DENMDisplay::processMessage(const std::variant<
+    etsi_its_denm_msgs::msg::DENM,
+    etsi_its_denm_ts_msgs::msg::DENM
+  > & msg_variant)
+{
   // Generate DENM render object from message
-  DENMRenderObject denm(*msg);
+  DENMRenderObject denm(msg_variant);
   if (!denm.validateFloats()) {
-        setStatus(
-          rviz_common::properties::StatusProperty::Error, "Topic",
-          "Message contained invalid floating point values (nans or infs)");
-        return;
+    // report error on the proper status entry depending on origin
+    if (denm.isTS()) {
+      setStatus(
+        rviz_common::properties::StatusProperty::Error, "DENM TS Topic",
+        "Message contained invalid floating point values (nans or infs)");
+    } else {
+      setStatus(
+        rviz_common::properties::StatusProperty::Error, "Topic",
+        "Message contained invalid floating point values (nans or infs)");
+    }
+    return;
   }
   
   // Check if Station ID is already present in list
   auto it = denms_.find(denm.getStationID());
   if (it != denms_.end()) it->second = denm; // Key exists, update the value
-  else denms_.insert(std::make_pair(denm.getStationID(), denm)); 
-  
-  overlay_->show();
+  else denms_.insert(std::make_pair(denm.getStationID(), denm));
+
+  // Update DENM TS message counter and status shown in RViz
+  if (denm.isTS()) {
+    ++received_ts_;
+    setStatus(
+      rviz_common::properties::StatusProperty::Ok, "DENM TS Topic", QString::number(received_ts_) + " messages received");
+    // show TS overlay only if overlay checkbox for TS enabled
+    if (show_overlay_prop_ts_->getBool()) overlay_ts_->show();
+  } else {
+    // show base DENM overlay only if overlay checkbox enabled
+    if (show_overlay_prop_->getBool()) overlay_->show();
+  }
 }
 
 void DENMDisplay::update(float, float) {
     
   // Check for outdated DENMs
   for (auto it = denms_.begin(); it != denms_.end(); ) {
-    if (it->second.getAge(rviz_node_->now()) > buffer_timeout_->getFloat()) it = denms_.erase(it);
+    double timeout = it->second.isTS() ? buffer_timeout_ts_->getFloat() : buffer_timeout_->getFloat();
+    if (it->second.getAge(rviz_node_->now()) > timeout) it = denms_.erase(it);
     else ++it;
   }
-  if (denms_.empty() || !show_overlay_prop_->getBool()) {
+  // Find a DENM to display in the overlay
+  std::optional<std::reference_wrapper<DENMRenderObject>> overlay_candidate;
+  bool candidate_is_ts = false;
+  for (auto & kv : denms_) {
+    DENMRenderObject & d = kv.second;
+    if (d.isTS() && show_overlay_prop_ts_->getBool()) {
+      overlay_candidate = std::ref(d);
+      candidate_is_ts = true;
+      break;
+    }
+    if (!d.isTS() && show_overlay_prop_->getBool()) {
+      overlay_candidate = std::ref(d);
+      candidate_is_ts = false;
+      break;
+    }
+  }
+  if (!overlay_candidate.has_value()) {
     overlay_->hide();
+    overlay_ts_->hide();
   } else {
-    updateOverlay(denms_.begin()->second);
+    // update the correct overlay and hide the other
+    if (candidate_is_ts) {
+      overlay_->hide();
+      updateOverlay(overlay_candidate->get(), overlay_ts_, true);
+      overlay_ts_->show();
+    } else {
+      overlay_ts_->hide();
+      updateOverlay(overlay_candidate->get(), overlay_, false);
+      overlay_->show();
+    }
   }
 
   // Render all valid denms
@@ -137,6 +302,11 @@ void DENMDisplay::update(float, float) {
   for(auto it = denms_.begin(); it != denms_.end(); ++it) {
 
     DENMRenderObject denm = it->second;
+
+    // Skip rendering depending on visualize checkboxes
+    if (denm.isTS() && !viz_denm_ts_->getBool()) continue;
+    if (!denm.isTS() && !viz_denm_->getBool()) continue;
+
     Ogre::Vector3 sn_position;
     Ogre::Quaternion sn_orientation;
     if (!context_->getFrameManager()->getTransform(denm.getHeader(), sn_position, sn_orientation)) {
@@ -204,7 +374,7 @@ void DENMDisplay::update(float, float) {
   }
 }
 
-void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object) {
+void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object, std::shared_ptr<rviz_plugin::OverlayObject> target_overlay, bool is_ts) {
   // Prepare overlay text
   std::string general_text = "Hazard warning!";
   std::string subtext;
@@ -214,14 +384,14 @@ void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object) {
 
   // Prepare font
   QFont overlay_font;
-  int font_index = font_prop_->getOptionInt();
+  int font_index = (is_ts ? font_prop_ts_->getOptionInt() : font_prop_->getOptionInt());
   if (font_index < font_families_.size()) {
     overlay_font = QFont(font_families_[font_index]);
   } else {
     RCLCPP_FATAL(rviz_node_->get_logger(), "Unexpected error at selecting font index %d.", font_index);
     return;
   }
-  int general_text_size = text_size_prop_->getInt();
+  int general_text_size = (is_ts ? text_size_prop_ts_->getInt() : text_size_prop_->getInt());
   int subtext_size = std::max(1, general_text_size / 2);
 
   // Measure text sizes
@@ -245,15 +415,15 @@ void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object) {
   int height = general_fm.height() + sub_fm.height() + spacing + padding * 2;
 
   // Update overlay texture size to fit text
-  overlay_->updateTextureSize(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
-  rviz_plugin::ScopedPixelBuffer buffer = overlay_->getBuffer();
+  target_overlay->updateTextureSize(static_cast<unsigned int>(width), static_cast<unsigned int>(height));
+  rviz_plugin::ScopedPixelBuffer buffer = target_overlay->getBuffer();
 
-  QColor bg_color = bg_color_prop_->getColor();
-  bg_color.setAlphaF(bg_alpha_prop_->getFloat());
-  QColor fg_color = fg_color_prop_->getColor();
-  fg_color.setAlphaF(fg_alpha_prop_->getFloat());
+  QColor bg_color = (is_ts ? bg_color_prop_ts_->getColor() : bg_color_prop_->getColor());
+  bg_color.setAlphaF(is_ts ? bg_alpha_prop_ts_->getFloat() : bg_alpha_prop_->getFloat());
+  QColor fg_color = (is_ts ? fg_color_prop_ts_->getColor() : fg_color_prop_->getColor());
+  fg_color.setAlphaF(is_ts ? fg_alpha_prop_ts_->getFloat() : fg_alpha_prop_->getFloat());
 
-  QImage Hud = buffer.getQImage(*overlay_, bg_color);
+  QImage Hud = buffer.getQImage(*target_overlay, bg_color);
   QPainter painter(&Hud);
   painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -266,7 +436,7 @@ void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object) {
   painter.drawRoundedRect(0, 0, width, height, 16, 16);
 
   // Draw general_text (centered)
-  painter.setPen(QPen(fg_color, line_width_prop_->getInt() > 0 ? line_width_prop_->getInt() : 1));
+  painter.setPen(QPen(fg_color, (is_ts ? line_width_prop_ts_->getInt() : line_width_prop_->getInt()) > 0 ? (is_ts ? line_width_prop_ts_->getInt() : line_width_prop_->getInt()) : 1));
   painter.setFont(general_font);
   int general_x = (width - general_width) / 2;
   int general_y = padding + general_fm.ascent();
@@ -280,12 +450,12 @@ void DENMDisplay::updateOverlay(DENMRenderObject &denm_render_object) {
 
   painter.end();
 
-  overlay_->setDimensions(width, height);
-  overlay_->setPosition(left_offset_prop_->getInt(), top_offset_prop_->getInt());
-}
-
-}  // namespace displays
-}  // namespace etsi_its_msgs
-
-#include <pluginlib/class_list_macros.hpp>  // NOLINT
-PLUGINLIB_EXPORT_CLASS(etsi_its_msgs::displays::DENMDisplay, rviz_common::Display)
+  target_overlay->setDimensions(width, height);
+  target_overlay->setPosition((is_ts ? left_offset_prop_ts_->getInt() : left_offset_prop_->getInt()), (is_ts ? top_offset_prop_ts_->getInt() : top_offset_prop_->getInt()));
+ }
+ 
+ }  // namespace displays
+ }  // namespace etsi_its_msgs
+ 
+ #include <pluginlib/class_list_macros.hpp>  // NOLINT
+ PLUGINLIB_EXPORT_CLASS(etsi_its_msgs::displays::DENMDisplay, rviz_common::Display)

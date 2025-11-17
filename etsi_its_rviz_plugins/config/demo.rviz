@@ -68,23 +68,42 @@ Visualization Manager:
             Value: /etsi_its_conversion/cam/out
           Value: true
         - Class: etsi_its_msgs/DENM
-          Color: 255; 0; 25
           Enabled: true
-          Metadata:
-            CauseCode: true
-            Color: 255; 0; 25
-            Scale: 4
-            StationID: true
-            SubCauseCode: true
-            Value: true
           Name: DENM
-          Timeout: 60
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/denm/out
+          DENM TS Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /etsi_its_conversion/denm_ts/out
+          Visualize DENMs:
+            Value: true
+            Timeout: 60
+            Color: 255; 0; 25
+            Metadata:
+              CauseCode: true
+              Color: 255; 0; 25
+              Scale: 4
+              StationID: true
+              SubCauseCode: true
+              Value: true
+          Visualize DENMs TS:
+            Value: true
+            Timeout: 60
+            Color: 255; 0; 25
+            Metadata:
+              CauseCode: true
+              Color: 255; 0; 25
+              Scale: 4
+              StationID: true
+              SubCauseCode: true
+              Value: true
           Value: true
         - Class: etsi_its_msgs/CPM
           Color: 255; 170; 0
@@ -157,23 +176,42 @@ Visualization Manager:
             Value: /etsi_its_conversion/cam/in
           Value: true
         - Class: etsi_its_msgs/DENM
-          Color: 255; 0; 25
           Enabled: true
-          Metadata:
-            CauseCode: true
-            Color: 255; 0; 25
-            Scale: 4
-            StationID: true
-            SubCauseCode: true
-            Value: true
           Name: DENM
-          Timeout: 60
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/denm/in
+          DENM TS Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /etsi_its_conversion/denm_ts/in
+          Visualize DENMs:
+            Value: true
+            Timeout: 60
+            Color: 255; 0; 25
+            Metadata:
+              CauseCode: true
+              Color: 255; 0; 25
+              Scale: 4
+              StationID: true
+              SubCauseCode: true
+              Value: true
+          Visualize DENMs TS:
+            Value: true
+            Timeout: 60
+            Color: 255; 0; 25
+            Metadata:
+              CauseCode: true
+              Color: 255; 0; 25
+              Scale: 4
+              StationID: true
+              SubCauseCode: true
+              Value: true
           Value: true
         - Class: etsi_its_msgs/CPM
           Color: 255; 170; 0
