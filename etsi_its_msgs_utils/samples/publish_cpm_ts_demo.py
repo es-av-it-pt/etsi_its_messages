@@ -37,7 +37,7 @@ class Publisher(Node):
         super().__init__("cpm_publisher")
         topic = "/vehicle_7303/CPM"
         self.publisher = self.create_publisher(CollectivePerceptionMessage, topic, 1)
-        self.timer_period = 1  # seconds
+        self.timer_period = 0.1  # seconds
         self.timer = self.create_timer(self.timer_period, self.publish)
         self.get_logger().info(f"CPM Publisher node has been started. The message will be published at {1/self.timer_period:.0f} Hz on topic: {topic}")
 
@@ -46,8 +46,8 @@ class Publisher(Node):
         # positions/velocities are in meters, conversion to message uses *1e2 (centimeters)
         self.tracked = [
             { "id": 0, "static": True,  "x_m": 10.0, "y_m": 2.0,  "vx_m_s": 0.0,  "vy_m_s": 0.0 },
-            { "id": 1, "static": False, "x_m": 12.0, "y_m": 4.0,  "vx_m_s": 1.2,  "vy_m_s": 0.3 },
-            { "id": 2, "static": False, "x_m": 8.0,  "y_m": -1.0, "vx_m_s": -0.5, "vy_m_s": 0.8 },
+            { "id": 1, "static": False, "x_m": 12.0, "y_m": 4.0,  "vx_m_s": 28,  "vy_m_s": 20 },    # 124 km/h
+            { "id": 2, "static": False, "x_m": 8.0,  "y_m": -1.0, "vx_m_s": -6, "vy_m_s": 8 },      # 36 km/h
         ]
 
         # keep last time to compute accurate movement deltas
@@ -75,23 +75,26 @@ class Publisher(Node):
 
         # deterministic inclusion cycle:
         # phase length = 5s, sequence (repeat):
-        # 0..5s   -> [0]
-        # 5..10s  -> [0,1]
-        # 10..15s -> [0,1,2]
-        # 15..20s -> [0,2]
-        # 20..25s -> [] (empty phase)
+        # 0..5s   -> [] (empty phase)
+        # 5..10s  -> [0]
+        # 10..15s -> [0,1]
+        # 15..20s -> [0,1,2]
+        # 20..25s -> [0,2]
+        # 25..30s -> [] (empty phase)
         elapsed_s = (now_ns - self.start_time_ns) / 1e9
-        phase = int(elapsed_s // 5) % 5 # 5 seconds each phase with 5 phases total
+        phase = int(elapsed_s // 5) % 6 # 5 seconds each phase; 6 phases total
 
         if phase == 0:
-            ids = [0]
+            ids = []
         elif phase == 1:
-            ids = [0, 1]
+            ids = [0]
         elif phase == 2:
-            ids = [0, 1, 2]
+            ids = [0, 1]
         elif phase == 3:
+            ids = [0, 1, 2]
+        elif phase == 4:
             ids = [0, 2]
-        else:  # phase == 4 -> [] (empty phase)
+        else:  # phase == 5 (empty phase)
             ids = []
 
         msg = CollectivePerceptionMessage()
@@ -133,23 +136,34 @@ class Publisher(Node):
             perceived_object.measurement_delta_time.value = 10
 
             # convert meters to message units (centimeters)
-            x_val = int(to["x_m"] * 1e2)
-            y_val = int(to["y_m"] * 1e2)
+            # x_val = int(to["x_m"] * 1e2)
+            # y_val = int(to["y_m"] * 1e2)
+            x_val = int(to["x_m"])
+            y_val = int(to["y_m"])
 
             perceived_object.position.x_coordinate.value.value = x_val
             perceived_object.position.x_coordinate.confidence.value = perceived_object.position.x_coordinate.confidence.UNAVAILABLE
             perceived_object.position.y_coordinate.value.value = y_val
             perceived_object.position.y_coordinate.confidence.value = perceived_object.position.y_coordinate.confidence.UNAVAILABLE
+            perceived_object.position.z_coordinate_is_present = False
 
-            perceived_object.object_dimension_x_is_present = True
-            perceived_object.object_dimension_x.value.value = int(3.5 * 1e1)
-            perceived_object.object_dimension_x.confidence.value = perceived_object.object_dimension_x.confidence.UNAVAILABLE
-            perceived_object.object_dimension_y_is_present = True
-            perceived_object.object_dimension_y.value.value = int(1.8 * 1e1)
-            perceived_object.object_dimension_y.confidence.value = perceived_object.object_dimension_y.confidence.UNAVAILABLE
-            perceived_object.object_dimension_z_is_present = True
-            perceived_object.object_dimension_z.value.value = int(1.6 * 1e1)
-            perceived_object.object_dimension_z.confidence.value = perceived_object.object_dimension_z.confidence.UNAVAILABLE
+            perceived_object.velocity_is_present = True
+            perceived_object.velocity.choice = perceived_object.velocity.CHOICE_CARTESIAN_VELOCITY
+            perceived_object.velocity.cartesian_velocity.x_velocity.value.value = int(to["vx_m_s"]) # TODO: convert to cm/s (*1e2)
+            perceived_object.velocity.cartesian_velocity.x_velocity.confidence.value = perceived_object.velocity.cartesian_velocity.x_velocity.confidence.UNAVAILABLE
+            perceived_object.velocity.cartesian_velocity.y_velocity.value.value = int(to["vy_m_s"]) # TODO: convert to cm/s (*1e2)
+            perceived_object.velocity.cartesian_velocity.y_velocity.confidence.value = perceived_object.velocity.cartesian_velocity.y_velocity.confidence.UNAVAILABLE
+            perceived_object.velocity.cartesian_velocity.z_velocity_is_present = False
+
+            # perceived_object.object_dimension_x_is_present = True
+            # perceived_object.object_dimension_x.value.value = int(3.5 * 1e1)
+            # perceived_object.object_dimension_x.confidence.value = perceived_object.object_dimension_x.confidence.UNAVAILABLE
+            # perceived_object.object_dimension_y_is_present = True
+            # perceived_object.object_dimension_y.value.value = int(1.8 * 1e1)
+            # perceived_object.object_dimension_y.confidence.value = perceived_object.object_dimension_y.confidence.UNAVAILABLE
+            # perceived_object.object_dimension_z_is_present = True
+            # perceived_object.object_dimension_z.value.value = int(1.6 * 1e1)
+            # perceived_object.object_dimension_z.confidence.value = perceived_object.object_dimension_z.confidence.UNAVAILABLE
 
             perceived_object_container.perceived_objects.array.append(perceived_object)
 
