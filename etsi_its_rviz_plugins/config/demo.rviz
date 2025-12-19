@@ -49,42 +49,23 @@ Visualization Manager:
     - Class: rviz_common/Group
       Displays:
         - Class: etsi_its_msgs/CAM
+          Color: 0; 170; 255
           Enabled: true
+          Metadata:
+            Color: 0; 170; 255
+            Scale: 4
+            Speed: true
+            StationID: true
+            Value: true
           Name: CAM
+          Scale: 1
+          Timeout: 2
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/cam/out
-          CAM TS Topic:
-            Depth: 5
-            Durability Policy: Volatile
-            History Policy: Keep Last
-            Reliability Policy: Reliable
-            Value: /etsi_its_conversion/cam_ts/out
-          Visualize CAMs:
-            Value: true
-            Timeout: 2
-            Scale: 1
-            Color: 0; 170; 255
-            Metadata:
-              Value: true
-              Scale: 4
-              StationID: true
-              Speed: true
-              Color: 0; 170; 255
-          Visualize CAMs TS:
-            Value: true
-            Timeout: 2
-            Scale: 1
-            Color: 0; 170; 255
-            Metadata:
-              Value: true
-              Scale: 4
-              StationID: true
-              Speed: true
-              Color: 0; 170; 255
           Value: true
         - Class: etsi_its_msgs/DENM
           Color: 255; 0; 25
@@ -157,42 +138,23 @@ Visualization Manager:
     - Class: rviz_common/Group
       Displays:
         - Class: etsi_its_msgs/CAM
+          Color: 0; 170; 255
           Enabled: true
+          Metadata:
+            Color: 0; 170; 255
+            Scale: 4
+            Speed: true
+            StationID: true
+            Value: true
           Name: CAM
+          Scale: 1
+          Timeout: 2
           Topic:
             Depth: 5
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/cam/in
-          CAM TS Topic:
-            Depth: 5
-            Durability Policy: Volatile
-            History Policy: Keep Last
-            Reliability Policy: Reliable
-            Value: /etsi_its_conversion/cam_ts/in
-          Visualize CAMs:
-            Value: true
-            Timeout: 2
-            Scale: 1
-            Color: 0; 170; 255
-            Metadata:
-              Value: true
-              Scale: 4
-              StationID: true
-              Speed: true
-              Color: 0; 170; 255
-          Visualize CAMs TS:
-            Value: true
-            Timeout: 2
-            Scale: 1
-            Color: 0; 170; 255
-            Metadata:
-              Value: true
-              Scale: 4
-              StationID: true
-              Speed: true
-              Color: 0; 170; 255
           Value: true
         - Class: etsi_its_msgs/DENM
           Color: 255; 0; 25
