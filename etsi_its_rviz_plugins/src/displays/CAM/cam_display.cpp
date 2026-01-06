@@ -111,7 +111,6 @@ void CAMDisplay::setTopic(const QString & topic, const QString & datatype)
 
 void CAMDisplay::updateTopic()
 {
-  std::cout << "CAMDisplay::updateTopic()" << std::endl;
   unsubscribe();
   reset();
   subscribe();
@@ -239,7 +238,7 @@ void CAMDisplay::onDisable()
   reset();
 }
 
-// Unified handler used by both release 1 (base-class override delegates to this) and release 2 subscription lambda
+// Unified handler used by both release 1 and release 2
 void CAMDisplay::processMessage(const std::variant<
     etsi_its_cam_msgs::msg::CAM,
     etsi_its_cam_ts_msgs::msg::CAM
@@ -269,13 +268,8 @@ void CAMDisplay::processMessage(const std::variant<
   else cams_.insert(std::make_pair(cam.getStationID(), cam));
 
   ++messages_received_;
-  QString topic_str = QString::number(messages_received_) + " messages received";
-  // Append topic subscription frequency.
-  const double duration = (rviz_node_->now() - subscription_start_time_).seconds();
-  const double subscription_frequency = static_cast<double>(messages_received_) / duration;
-  topic_str += " at " + QString::number(subscription_frequency, 'f', 1) + " hz.";
   setStatus(
-    rviz_common::properties::StatusProperty::Ok, "Topic", topic_str);
+    rviz_common::properties::StatusProperty::Ok, "Topic", QString::number(messages_received_) + " messages received");
 
   return;
 }
