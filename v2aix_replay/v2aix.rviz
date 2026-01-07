@@ -44,7 +44,14 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map_link/navsatfix
+      Use Local Map:
+        Meter per Pixel (Zoom 0): 0
+        Origin CRS: ""
+        "Origin X ": 0
+        "Origin Y ": 0
+        Value: false
       Value: true
+      Visualize in UTM Frame: false
       Zoom: 16
     - Class: rviz_common/Group
       Displays:
@@ -58,7 +65,7 @@ Visualization Manager:
             StationID: true
             Value: true
           Name: CAM
-          Scale: 1
+          Scale: 50
           Timeout: 2
           Topic:
             Depth: 5
@@ -78,6 +85,19 @@ Visualization Manager:
             SubCauseCode: true
             Value: true
           Name: DENM
+          Overlay:
+            BG Color:
+              BG Alpha: 0.20000000298023224
+              Value: 255; 85; 0
+            FG Color:
+              FG Alpha: 0.800000011920929
+              Value: 255; 255; 255
+            Font: DejaVu Sans
+            Left Offset: 0
+            Line Width: 1
+            Text Size: 16
+            Top Offset: 0
+            Value: false
           Timeout: 60
           Topic:
             Depth: 5
@@ -91,6 +111,7 @@ Visualization Manager:
           Enabled: true
           Metadata:
             Color: 255; 170; 0
+            ObjectID: true
             Scale: 4
             Speed: true
             StationID: true
@@ -106,15 +127,7 @@ Visualization Manager:
             Value: /etsi_its_conversion/cpm_ts/out
           Value: true
         - Class: etsi_its_msgs/MAPEM
-          Egress Lane Color: 255; 170; 0
           Enabled: true
-          Ingress Lane Color: 85; 85; 255
-          MAPEM Lane Width: 1
-          MAPEM Timeout: 120
-          Metadata:
-            Scale: 4
-            Text Color: 255; 255; 255
-            Value: true
           Name: MAPEM
           SPATEM Topic:
             Depth: 5
@@ -129,7 +142,28 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/mapem_ts/out
           Value: true
+          Visualize MAPEMs:
+            Egress Lane Color: 255; 170; 0
+            Ingress Lane Color: 85; 85; 255
+            MAPEM Lane Width: 1
+            MAPEM Sphere Scale: 1
+            MAPEM Timeout: 120
+            Metadata:
+              Scale: 4
+              Text Color: 255; 255; 255
+              Value: true
+            Value: true
           Visualize SPATEMs:
+            Metadata:
+              Confidence: false
+              Likely time: false
+              Max end time: true
+              Min end time: true
+              Next time: false
+              Scale: 1
+              Start time: false
+              Text Color: 255; 255; 255
+              Value: true
             SPATEM Sphere Scale: 3
             SPATEM Timeout: 1
             Value: true
@@ -167,6 +201,19 @@ Visualization Manager:
             SubCauseCode: true
             Value: true
           Name: DENM
+          Overlay:
+            BG Color:
+              BG Alpha: 0.20000000298023224
+              Value: 255; 85; 0
+            FG Color:
+              FG Alpha: 0.800000011920929
+              Value: 255; 255; 255
+            Font: DejaVu Sans
+            Left Offset: 0
+            Line Width: 1
+            Text Size: 16
+            Top Offset: 0
+            Value: false
           Timeout: 60
           Topic:
             Depth: 5
@@ -180,6 +227,7 @@ Visualization Manager:
           Enabled: true
           Metadata:
             Color: 255; 170; 0
+            ObjectID: true
             Scale: 4
             Speed: true
             StationID: true
@@ -195,15 +243,7 @@ Visualization Manager:
             Value: /etsi_its_conversion/cpm_ts/in
           Value: true
         - Class: etsi_its_msgs/MAPEM
-          Egress Lane Color: 255; 170; 0
           Enabled: true
-          Ingress Lane Color: 85; 85; 255
-          MAPEM Lane Width: 1
-          MAPEM Timeout: 120
-          Metadata:
-            Scale: 4
-            Text Color: 255; 255; 255
-            Value: true
           Name: MAPEM
           SPATEM Topic:
             Depth: 5
@@ -218,7 +258,28 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /etsi_its_conversion/mapem_ts/in
           Value: true
+          Visualize MAPEMs:
+            Egress Lane Color: 255; 170; 0
+            Ingress Lane Color: 85; 85; 255
+            MAPEM Lane Width: 1
+            MAPEM Sphere Scale: 1
+            MAPEM Timeout: 120
+            Metadata:
+              Scale: 4
+              Text Color: 255; 255; 255
+              Value: true
+            Value: true
           Visualize SPATEMs:
+            Metadata:
+              Confidence: false
+              Likely time: false
+              Max end time: true
+              Min end time: true
+              Next time: false
+              Scale: 1
+              Start time: false
+              Text Color: 255; 255; 255
+              Value: true
             SPATEM Sphere Scale: 1
             SPATEM Timeout: 1
             Value: true
@@ -270,25 +331,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 171.37442016601562
+      Distance: 3918.79736328125
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 87.17694091796875
-        Y: 43.502471923828125
+        X: 97.62416076660156
+        Y: 44.39689254760742
         Z: 1.2553461601783056e-05
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.734796404838562
+      Pitch: 0.8147963285446167
       Target Frame: <Fixed Frame>
       Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 5.2624053955078125
+      Yaw: 5.057400703430176
     Saved: ~
 Window Geometry:
   Displays:
