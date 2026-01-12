@@ -7,9 +7,10 @@
     base_class_type="rviz_common::Display"
   >
     <description>
-      Displays data from a etsi_its_cam_msgs::CAM.
+      Displays data from a etsi_its_cam_msgs::CAM or a etsi_its_cam_ts_msgs::CAM.
     </description>
     <message_type>etsi_its_cam_msgs/msg/CAM</message_type>
+    <message_type>etsi_its_cam_ts_msgs/msg/CAM</message_type>
   </class>
 
   <class
