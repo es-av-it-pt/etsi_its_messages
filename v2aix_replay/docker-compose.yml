@@ -15,7 +15,7 @@ services:
       service: ros2-zenoh-service
     command: ros2 launch etsi_its_conversion converter.launch.py use_sim_time:=true input_topic_udp:=/v2x/raw
     volumes:
-      - ./etsi_its_conversion/params.yml:/docker-ros/ws/install/etsi_its_conversion/share/etsi_its_conversion/config/params.yml:ro
+      - ./config/etsi_its_conversion/params.yml:/docker-ros/ws/install/etsi_its_conversion/share/etsi_its_conversion/config/params.yml:ro
     networks:
       - v2aix_replay_net
 
@@ -24,7 +24,7 @@ services:
     extends:
       file: ./compose-essentials.template.yml
       service: ros2-zenoh-gpu-x11-service
-    command: ros2 launch etsi_its_rviz_plugins demo.launch.py use_sim_time:=true lat:=${RVIZ_LAT:-50.786750} lon:=${RVIZ_LON:-6.046295}
+    command: ros2 launch etsi_its_rviz_plugins demo.launch.py use_sim_time:=true lat:=${RVIZ_LAT} lon:=${RVIZ_LON}
     volumes:
       - ./v2aix.rviz:/docker-ros/ws/install/etsi_its_rviz_plugins/share/etsi_its_rviz_plugins/config/demo.rviz:ro
     networks:

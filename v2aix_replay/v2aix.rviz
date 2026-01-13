@@ -30,7 +30,7 @@ Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.699999988079071
-      Blocks: 3
+      Blocks: 1
       Class: rviz_satellite/AerialMap
       Draw Behind: false
       Enabled: true
@@ -65,8 +65,8 @@ Visualization Manager:
             StationID: true
             Value: true
           Name: CAM
-          Scale: 50
-          Timeout: 2
+          Scale: 1
+          Timeout: 10
           Topic:
             Depth: 5
             Durability Policy: Volatile
@@ -330,26 +330,21 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 3918.79736328125
+      Angle: 0
+      Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Focal Point:
-        X: 97.62416076660156
-        Y: 44.39689254760742
-        Z: 1.2553461601783056e-05
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8147963285446167
+      Scale: 1.843639850616455
       Target Frame: <Fixed Frame>
-      Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 5.057400703430176
+      Value: TopDownOrtho (rviz_default_plugins)
+      X: 0
+      Y: 0
     Saved: ~
 Window Geometry:
   Displays:
