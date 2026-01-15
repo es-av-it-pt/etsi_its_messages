@@ -16,7 +16,7 @@ The `.env` file controls:
 
 Run the composition (assuming you are in the `v2aix_replay` directory of this repository):
 ```bash
-docker compose --env-file .env -f docker-compose.yml
+docker compose up
 ```
 
 If RViz does not show up, ensure X11 permissions are set (e.g. `xhost +local:`) and `DISPLAY` is available.

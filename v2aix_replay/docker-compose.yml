@@ -5,8 +5,6 @@ services:
     extends:
       file: ./compose-essentials.template.yml
       service: zenoh-router
-    networks:
-      - v2aix_replay_net
 
   etsi_its_conversion:
     image: ghcr.io/ika-rwth-aachen/etsi_its_messages:latest
@@ -16,8 +14,6 @@ services:
     command: ros2 launch etsi_its_conversion converter.launch.py use_sim_time:=true input_topic_udp:=/v2x/raw
     volumes:
       - ./config/etsi_its_conversion/params.yml:/docker-ros/ws/install/etsi_its_conversion/share/etsi_its_conversion/config/params.yml:ro
-    networks:
-      - v2aix_replay_net
 
   etsi_its_rviz:
     image: ghcr.io/ika-rwth-aachen/etsi_its_messages:latest
@@ -27,8 +23,6 @@ services:
     command: ros2 launch etsi_its_rviz_plugins demo.launch.py use_sim_time:=true lat:=${RVIZ_LAT} lon:=${RVIZ_LON}
     volumes:
       - ./v2aix.rviz:/docker-ros/ws/install/etsi_its_rviz_plugins/share/etsi_its_rviz_plugins/config/demo.rviz:ro
-    networks:
-      - v2aix_replay_net
 
   v2aix_bag_player:
     image: ghcr.io/ika-rwth-aachen/etsi_its_messages:latest
@@ -37,12 +31,6 @@ services:
       service: ros2-zenoh-service
     command: ros2 bag play /bags/${BAG_PATH} --clock -l
     environment:
-      - BAG_PATH=${BAG_PATH}
+      - BAG_PATH
     volumes:
       - ${BAG_DIR:-./bags}:/bags:ro
-    networks:
-      - v2aix_replay_net
-
-networks:
-  v2aix_replay_net:
-    driver: bridge
