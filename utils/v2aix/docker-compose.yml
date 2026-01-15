@@ -33,4 +33,4 @@ services:
     environment:
       - BAG_PATH
     volumes:
-      - ${BAG_DIR:-./bags}:/bags:ro
+      - ${BAG_DIR}:/bags:ro

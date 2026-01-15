@@ -14,7 +14,7 @@ The `.env` file controls:
 
 ## Quick start
 
-Run the composition (assuming you are in the `v2aix_replay` directory of this repository):
+Run the composition (assuming you are in the `utils/v2aix` directory of this repository):
 ```bash
 docker compose up
 ```
