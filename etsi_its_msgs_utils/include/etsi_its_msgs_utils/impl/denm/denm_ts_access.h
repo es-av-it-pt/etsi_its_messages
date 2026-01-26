@@ -25,8 +25,8 @@ SOFTWARE.
 */
 
 /**
- * @file impl/denm/denm_access.h
- * @brief Main DENM access implementation header
+ * @file impl/denm/denm_ts_access.h
+ * @brief Main DENM TS access implementation header
  */
 
 #undef ETSI_ITS_MSGS_UTILS_IMPL_ASN1_PRIMITIVES_ASN1_PRIMITIVES_GETTERS_H
@@ -51,9 +51,9 @@ SOFTWARE.
 #include <GeographicLib/UTMUPS.hpp>
 
 #include <etsi_its_msgs_utils/impl/constants.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_getters.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_setters.h>
+#include <etsi_its_msgs_utils/impl/denm/denm_ts_getters.h>
+#include <etsi_its_msgs_utils/impl/denm/denm_ts_setters.h>
 
-namespace etsi_its_denm_msgs::access {
+namespace etsi_its_denm_ts_msgs::access {
 #include <etsi_its_msgs_utils/impl/denm/denm_utils.h>
-}  // namespace etsi_its_denm_msgs::access
+}  // namespace etsi_its_denm_ts_msgs::access

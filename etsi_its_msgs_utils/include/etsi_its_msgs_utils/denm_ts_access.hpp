@@ -25,35 +25,20 @@ SOFTWARE.
 */
 
 /**
- * @file impl/denm/denm_access.h
- * @brief Main DENM access implementation header
+ * @file denm_ts_access.hpp
+ * @brief Main DENM TS access header to include in ROS 2 projects
  */
-
-#undef ETSI_ITS_MSGS_UTILS_IMPL_ASN1_PRIMITIVES_ASN1_PRIMITIVES_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_ASN1_PRIMITIVES_ASN1_PRIMITIVES_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_GETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_SETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_UTILS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_GETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_SETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V1_3_1_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V1_3_1_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V2_1_1_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V2_1_1_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CHECKS_H
 
 #pragma once
 
-#include <cstring>
-#include <iostream>
-#include <map>
+// Messages
+#include <etsi_its_denm_ts_msgs/msg/denm.hpp>
+#include <geometry_msgs/msg/point_stamped.hpp>
 
-#include <GeographicLib/UTMUPS.hpp>
+namespace etsi_its_denm_ts_msgs {
+    using namespace msg;
+    namespace gm = geometry_msgs::msg;
+}
 
-#include <etsi_its_msgs_utils/impl/constants.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_getters.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_setters.h>
-
-namespace etsi_its_denm_msgs::access {
-#include <etsi_its_msgs_utils/impl/denm/denm_utils.h>
-}  // namespace etsi_its_denm_msgs::access
+// Implementation
+#include <etsi_its_msgs_utils/impl/denm/denm_ts_access.h>

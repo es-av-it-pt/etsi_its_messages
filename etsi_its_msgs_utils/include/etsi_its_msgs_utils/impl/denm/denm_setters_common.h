@@ -25,35 +25,17 @@ SOFTWARE.
 */
 
 /**
- * @file impl/denm/denm_access.h
- * @brief Main DENM access implementation header
+ * @file impl/denm/denm_setters_common.h
+ * @brief Common setter functions for the ETSI ITS DENM (EN and TS)
  */
 
-#undef ETSI_ITS_MSGS_UTILS_IMPL_ASN1_PRIMITIVES_ASN1_PRIMITIVES_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_ASN1_PRIMITIVES_ASN1_PRIMITIVES_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_GETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_SETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_UTILS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_GETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_SETTERS_COMMON_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V1_3_1_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V1_3_1_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V2_1_1_GETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_V2_1_1_SETTERS_H
-#undef ETSI_ITS_MSGS_UTILS_IMPL_CHECKS_H
+#ifndef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_SETTERS_COMMON_H
+#define ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_SETTERS_COMMON_H
 
-#pragma once
-
-#include <cstring>
-#include <iostream>
-#include <map>
-
-#include <GeographicLib/UTMUPS.hpp>
-
+#include <etsi_its_msgs_utils/impl/checks.h>
 #include <etsi_its_msgs_utils/impl/constants.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_getters.h>
-#include <etsi_its_msgs_utils/impl/denm/denm_setters.h>
+#include <etsi_its_msgs_utils/impl/asn1_primitives/asn1_primitives_setters.h>
 
-namespace etsi_its_denm_msgs::access {
-#include <etsi_its_msgs_utils/impl/denm/denm_utils.h>
-}  // namespace etsi_its_denm_msgs::access
+
+
+#endif  // ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_SETTERS_COMMON_H
