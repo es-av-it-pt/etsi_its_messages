@@ -51,46 +51,6 @@ inline void setItsPduHeader(DENM& denm, const uint32_t station_id, const uint8_t
 }
 
 /**
- * @brief Set the ReferenceTime-value
- * 
- * @param denm DENM to set the ReferenceTime-Value for
- * @param unix_nanosecs Timestamp in unix-nanoseconds to set the ReferenceTime-Value from
- * @param n_leap_seconds Number of leap seconds since 2004 for the given timestamp  (Defaults to the todays number of leap seconds since 2004.)
- */
-inline void setReferenceTime(
-    DENM& denm, const uint64_t unix_nanosecs,
-    const uint16_t n_leap_seconds = etsi_its_msgs::LEAP_SECOND_INSERTIONS_SINCE_2004.rbegin()->second) {
-  TimestampIts t_its;
-  setTimestampITS(t_its, unix_nanosecs, n_leap_seconds);
-  throwIfOutOfRange(t_its.value, TimestampIts::MIN, TimestampIts::MAX, "TimestampIts");
-  denm.denm.management.reference_time = t_its;
-}
-
-/**
- * @brief Set the StationType for a DENM
- *
- * @param denm DENM-Message to set the station_type value
- * @param value station_type value to set
- */
-inline void setStationType(DENM& denm, const int value) { setStationType(denm.denm.management.station_type, value); }
-
-/**
- * @brief Set the ReferencePositionWithConfidence for a DENM
- *
- * This function sets the latitude, longitude, and altitude of the DENMs reference position.
- * If the altitude is not provided, it is set to AltitudeValue::UNAVAILABLE.
- *
- * @param denm DENM to set the ReferencePosition
- * @param latitude The latitude value position in degree as decimal number.
- * @param longitude The longitude value in degree as decimal number.
- * @param altitude The altitude value (above the reference ellipsoid surface) in meter as decimal number (optional).
- */
-inline void setReferencePosition(DENM& denm, const double latitude, const double longitude,
-                                 const double altitude = AltitudeValue::UNAVAILABLE) {
-  setReferencePosition(denm.denm.management.event_position, latitude, longitude, altitude);
-}
-
-/**
  * @brief Set the IsHeadingPresent object for DENM
  * 
  * @param denm DENM to set IsHeadingPresent
@@ -121,72 +81,6 @@ inline void setHeading(DENM& denm, const double heading_val, const double confid
   } else {
     throw std::invalid_argument("LocationContainer is not present!");
   }
-}
-
-/**
- * @brief Set the IsSpeedPresent object for DENM
- * 
- * @param denm DENM to set IsSpeedPresent
- * @param presence_of_heading IsSpeedPresent-Value (true or false)
- */
-inline void setIsSpeedPresent(DENM& denm, bool presence_of_speed) {
-  if (denm.denm.location_is_present) {
-    denm.denm.location.event_speed_is_present = presence_of_speed;
-  } else {
-    throw std::invalid_argument("LocationContainer is not present!");
-  }
-}
-
-/**
- * @brief Set the vehicle speed
- *
- * @param denm DENM to set the speed value
- * @param speed_val speed value to set in m/s as decimal number
- * @param confidence speed confidence value to set in m/s (default: infinity, mapping to SpeedConfidence::UNAVAILABLE)
- */
-inline void setSpeed(DENM& denm, const double speed_val, const double confidence = std::numeric_limits<double>::infinity()) {
-  if (denm.denm.location_is_present) {
-    setSpeed(denm.denm.location.event_speed, speed_val, confidence);
-    setIsSpeedPresent(denm, true);
-  } else {
-    throw std::invalid_argument("LocationContainer is not present!");
-  }
-}
-
-/**
- * @brief Set the ReferencePosition of a DENM from a given UTM-Position
- * 
- * The position is transformed to latitude and longitude by using GeographicLib::UTMUPS
- * The z-Coordinate is directly used as altitude value
- * The frame_id of the given utm_position must be set to 'utm_<zone><N/S>'
- * 
- * @param[out] denm DENM for which to set the ReferencePosition
- * @param[in] utm_position geometry_msgs::PointStamped describing the given utm position
- * @param[in] zone the UTM zone (zero means UPS) of the given position
- * @param[in] northp hemisphere (true means north, false means south)
- */
-inline void setFromUTMPosition(DENM& denm, const gm::PointStamped& utm_position, const int& zone, const bool& northp) {
-  setFromUTMPosition(denm.denm.management.event_position, utm_position, zone, northp);
-}
-
-/**
- * @brief Set the Driving Lane Status by a vector of bools
- *
- * @param driving_lane_status
- * @param bits
- */
-inline void setDrivingLaneStatus(DrivingLaneStatus& driving_lane_status, const std::vector<bool>& bits) {
-  setBitString(driving_lane_status, bits);
-}
-
-/**
- * @brief Set the Lightbar Siren In Use by a vector of bools
- *
- * @param light_bar_siren_in_use
- * @param bits
- */
-inline void setLightBarSirenInUse(LightBarSirenInUse& light_bar_siren_in_use, const std::vector<bool>& bits) {
-  setBitString(light_bar_siren_in_use, bits);
 }
 
 }  // namespace etsi_its_denm_msgs::access
