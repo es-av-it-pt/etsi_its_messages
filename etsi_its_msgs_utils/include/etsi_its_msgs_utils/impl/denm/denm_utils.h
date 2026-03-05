@@ -29,12 +29,10 @@ SOFTWARE.
  * @brief Utility functions for the ETSI ITS DENM (EN and TS)
  */
 
-#include <etsi_its_msgs_utils/impl/constants.h>
-
 #ifndef ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_UTILS_H
 #define ETSI_ITS_MSGS_UTILS_IMPL_DENM_DENM_UTILS_H
 
-#pragma once
+#include <etsi_its_msgs_utils/impl/constants.h>
 
 /**
  * @brief Get the Unix-Nanoseconds from a given ReferenceTime object

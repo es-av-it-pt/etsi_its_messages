@@ -38,20 +38,6 @@ namespace etsi_its_denm_ts_msgs::access {
 #include <etsi_its_msgs_utils/impl/denm/denm_getters_common.h>
 
 /**
- * @brief Get the Unix-Nanoseconds from a given ReferenceTime object
- *
- * @param reference_time the ReferenceTime object to get the Unix-Nanoseconds from
- * @param n_leap_seconds number of leap-seconds since 2004. (Default: etsi_its_msgs::N_LEAP_SECONDS)
- * @return uint64_t the corresponding Unix-Nanoseconds
- */
-inline uint64_t getUnixNanosecondsFromReferenceTime(const TimestampIts& reference_time) {
-  double unix_time_with_leap_seconds = reference_time.value * 1e-3 + etsi_its_msgs::UNIX_SECONDS_2004;
-  uint16_t n_leap_seconds =
-      etsi_its_msgs::getLeapSecondInsertionsSince2004(static_cast<uint64_t>(unix_time_with_leap_seconds));
-  return (unix_time_with_leap_seconds - n_leap_seconds) * 1e9;
-}
-
-/**
  * @brief Get the WGS Heading object
  * 
  * @param denm DENM to get the WGS Heading-Value from
@@ -184,11 +170,11 @@ inline std::string getCauseCodeV2Type(const DENM& denm) {
     else if (cause_code == CauseCodeChoice().CHOICE_ROADWORKS3)
       cause_code_type = "roadworks";
     else if (cause_code == CauseCodeChoice().CHOICE_IMPASSABILITY5)
-      cause_code_type = "impassibility";
+      cause_code_type = "impassability";
     else if (cause_code == CauseCodeChoice().CHOICE_ADVERSE_WEATHER_CONDITION_ADHESION6)
       cause_code_type = "adverse weather condition - adhesion";
     else if (cause_code == CauseCodeChoice().CHOICE_AQUAPLANING7)
-      cause_code_type = "aquaplanning";
+      cause_code_type = "aquaplaning";
     else if (cause_code == CauseCodeChoice().CHOICE_HAZARDOUS_LOCATION_SURFACE_CONDITION9)
       cause_code_type = "hazardous location - surface condition";
     else if (cause_code == CauseCodeChoice().CHOICE_HAZARDOUS_LOCATION_OBSTACLE_ON_THE_ROAD10)
@@ -691,11 +677,11 @@ inline std::string getSubCauseCodeV2Type(const DENM& denm) {
       else if (sub_cause_code == DangerousSituationSubCauseCode().ESP_ENGAGED)
         sub_cause_code_type = "ESP (electronic stability program) engaged";
       else if (sub_cause_code == DangerousSituationSubCauseCode().ABS_ENGAGED)
-        sub_cause_code_type = "ABS (anti-lock breaking system) engaged";
+        sub_cause_code_type = "ABS (anti-lock braking system) engaged";
       else if (sub_cause_code == DangerousSituationSubCauseCode().EB_ENGAGED)
-        sub_cause_code_type = "AEB (automatic emergency breaking) engaged";
+        sub_cause_code_type = "AEB (automatic emergency braking) engaged";
       else if (sub_cause_code == DangerousSituationSubCauseCode().BRAKE_WARNING_ENGAGED)
-        sub_cause_code_type = "break warning engaged";
+        sub_cause_code_type = "brake warning engaged";
       else if (sub_cause_code == DangerousSituationSubCauseCode().COLLISION_RISK_WARNING_ENGAGED)
         sub_cause_code_type = "collision risk warning engaged";
     } else if (cause_code == CauseCodeChoice().CHOICE_RAILWAY_LEVEL_CROSSING100) {

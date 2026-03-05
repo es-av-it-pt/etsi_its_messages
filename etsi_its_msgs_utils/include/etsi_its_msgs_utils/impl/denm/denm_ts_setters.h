@@ -68,8 +68,8 @@ inline void setIsWGSHeadingPresent(DENM& denm, bool presence_of_heading) {
  * 0.0° equals WGS84 North, 90.0° equals WGS84 East, 180.0° equals WGS84 South and 270.0° equals WGS84 West
  * Wgs84AngleConfidence is set to UNAVAILABLE
  *
- * @param denm DENM to set the ReferencePosition
- * @param value Heading value in degree as decimal number
+ * @param denm DENM to set the WGS Heading
+ * @param heading_val Heading value in degree as decimal number
  * @param confidence standard deviation of heading in degree as decimal number (default: infinity, mapping to Wgs84AngleConfidence::UNAVAILABLE)
  */
 inline void setWGSHeading(DENM& denm, const double heading_val, const double confidence = std::numeric_limits<double>::infinity()) {

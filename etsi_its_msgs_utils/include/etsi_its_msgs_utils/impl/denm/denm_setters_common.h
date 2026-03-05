@@ -80,7 +80,7 @@ inline void setReferencePosition(DENM& denm, const double latitude, const double
  * @brief Set the IsSpeedPresent object for DENM
  * 
  * @param denm DENM to set IsSpeedPresent
- * @param presence_of_heading IsSpeedPresent-Value (true or false)
+ * @param presence_of_speed IsSpeedPresent-Value (true or false)
  */
 inline void setIsSpeedPresent(DENM& denm, bool presence_of_speed) {
   if (denm.denm.location_is_present) {

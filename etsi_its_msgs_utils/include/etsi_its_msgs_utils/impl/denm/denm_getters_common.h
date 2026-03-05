@@ -148,7 +148,7 @@ inline double getSpeedConfidence(const DENM& denm) {
 }
 
 /**
- * @brief 
+ * @brief Get the UTM Position defined within the ManagementContainer of the DENM
  * 
  * @param denm DENM to get the UTM Position from
  * @param zone the UTM zone (zero means UPS)
@@ -160,7 +160,7 @@ inline gm::PointStamped getUTMPosition(const DENM& denm, int& zone, bool& northp
 }
 
 /**
- * @brief 
+ * @brief Get the UTM Position defined within the ManagementContainer of the DENM
  * 
  * @param denm DENM to get the UTM Position from
  * @return gm::PointStamped geometry_msgs::PointStamped of the given position
