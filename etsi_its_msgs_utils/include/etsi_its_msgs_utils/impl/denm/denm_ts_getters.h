@@ -79,7 +79,7 @@ inline double getWGSHeadingConfidence(const DENM& denm) {
  * @param denm DENM to get the causeCode value from
  * @return causeCode value
  */
-inline uint8_t getCauseCodeV2(const DENM& denm) { return denm.denm.situation.event_type.cc_and_scc.choice; }
+inline uint8_t getCauseCode(const DENM& denm) { return denm.denm.situation.event_type.cc_and_scc.choice; }
 
 /**
  * @brief Get the Sub Cause Code object
@@ -87,8 +87,8 @@ inline uint8_t getCauseCodeV2(const DENM& denm) { return denm.denm.situation.eve
  * @param denm DENM to get the subCauseCode value from
  * @return subCauseCode value
  */
-inline uint8_t getSubCauseCodeV2(const DENM& denm) {
-  int cause_code = getCauseCodeV2(denm);
+inline uint8_t getSubCauseCode(const DENM& denm) {
+  int cause_code = getCauseCode(denm);
   if (cause_code == CauseCodeChoice().CHOICE_TRAFFIC_CONDITION1)
     return denm.denm.situation.event_type.cc_and_scc.traffic_condition1.value;
   else if (cause_code == CauseCodeChoice().CHOICE_ACCIDENT2)
@@ -158,9 +158,9 @@ inline uint8_t getSubCauseCodeV2(const DENM& denm) {
  * @param denm DENM to get the causeCodeType value from
  * @return causeCodeType value
  */
-inline std::string getCauseCodeV2Type(const DENM& denm) {
+inline std::string getCauseCodeType(const DENM& denm) {
   if (denm.denm.situation_is_present) {
-    int cause_code = getCauseCodeV2(denm);
+    int cause_code = getCauseCode(denm);
     std::string cause_code_type = "undefined";
 
     if (cause_code == CauseCodeChoice().CHOICE_TRAFFIC_CONDITION1)
@@ -236,10 +236,10 @@ inline std::string getCauseCodeV2Type(const DENM& denm) {
  * @param denm DENM to get the subCauseCodeType value from
  * @return causeCodeType value 
  */
-inline std::string getSubCauseCodeV2Type(const DENM& denm) {
+inline std::string getSubCauseCodeType(const DENM& denm) {
   if (denm.denm.situation_is_present) {
-    int cause_code = getCauseCodeV2(denm);
-    int sub_cause_code = getSubCauseCodeV2(denm);
+    int cause_code = getCauseCode(denm);
+    int sub_cause_code = getSubCauseCode(denm);
     std::string sub_cause_code_type = "undefined";
     if (cause_code == CauseCodeChoice().CHOICE_TRAFFIC_CONDITION1) {
       if (sub_cause_code == TrafficConditionSubCauseCode().UNAVAILABLE)
