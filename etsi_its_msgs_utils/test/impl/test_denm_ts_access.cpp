@@ -74,4 +74,13 @@ TEST(etsi_its_denm_ts_msgs, test_set_get_denm) {
   denm.denm.location_is_present = true;
   denm_ts_access::setSpeed(denm, speed_val);
   EXPECT_NEAR(speed_val, denm_ts_access::getSpeed(denm), 1e-2);
+
+  // (Sub)CauseCode exemplary test
+  denm.denm.situation_is_present = true;
+  denm.denm.situation.event_type.cc_and_scc.choice = denm_ts_msgs::CauseCodeChoice().CHOICE_TRAFFIC_CONDITION1;
+  denm.denm.situation.event_type.cc_and_scc.traffic_condition1.value = denm_ts_msgs::TrafficConditionSubCauseCode().TRAFFIC_JAM_SLOWLY_INCREASING;
+  EXPECT_EQ(denm_ts_msgs::CauseCodeChoice().CHOICE_TRAFFIC_CONDITION1, denm_ts_access::getCauseCode(denm));
+  EXPECT_EQ(denm_ts_msgs::TrafficConditionSubCauseCode().TRAFFIC_JAM_SLOWLY_INCREASING, denm_ts_access::getSubCauseCode(denm));
+  EXPECT_EQ("traffic condition", denm_ts_access::getCauseCodeType(denm));
+  EXPECT_EQ("traffic jam slowly increasing", denm_ts_access::getSubCauseCodeType(denm));
 }
