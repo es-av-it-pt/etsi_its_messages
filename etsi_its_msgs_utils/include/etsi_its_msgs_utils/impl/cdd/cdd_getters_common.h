@@ -26,7 +26,7 @@ SOFTWARE.
 
 /**
  * @file impl/cdd/cdd_getters_common.h
- * @brief Common getter functions for the ETSI ITS Common Data Dictionary (CDD) v1.3.1 and v2.1.1
+ * @brief Common getter functions for the ETSI ITS Common Data Dictionary (CDD) v1.3.1, v2.1.1 and v2.2.1
  */
 
 #ifndef ETSI_ITS_MSGS_UTILS_IMPL_CDD_CDD_GETTERS_COMMON_H
